@@ -1,0 +1,20 @@
+<CodeSnippets xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+  <CodeSnippet Format="1.0.0" xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+    <Header>
+      <Title>Build - VideoService.cs - Publish</Title>
+      <Author>DPE</Author>
+      <Shortcut>BuildVideoServicecsPublish</Shortcut>
+      <SnippetTypes>
+        <SnippetType>Expansion</SnippetType>
+      </SnippetTypes>
+    </Header>
+    <Snippet>
+      <Code Language="csharp" Delimiter="Å">
+        <![CDATA[var mediaContext = new CloudMediaContext(
+                                 CloudConfigurationManager.GetSetting("MediaServicesAccountName"),
+                                 CloudConfigurationManager.GetSetting("MediaServicesAccountKey"));
+video.EncodedVideoUrl = mediaContext.PublishJobAsset(video.JobId);]]>
+      </Code>
+    </Snippet>
+  </CodeSnippet>
+</CodeSnippets>
