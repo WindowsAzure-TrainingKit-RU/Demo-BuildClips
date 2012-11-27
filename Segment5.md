@@ -9,19 +9,19 @@ In this segment, you will monitor and manage the Windows Azure Cloud Services th
 
 1. Open the previously deployed **BuildClips** cloud service.
 
-	>**Speaking Point:** Let's go back to the BuildClips cloud service. Every cloud project in Azure has this nice dashboard view where we can see the overall health of the application. We can actually see individual machines, CPU, network and memory access, as well as the aggregate view of it as well. It displays separate information for both front-end and back-end roles.
+	>**Speaking Point:** Let's go back to the BuildClips cloud service. Every cloud project in Azure has this nice dashboard view where we can see the overall health of the application. We can actually see individual machines, CPU, network and memory access, as well as the aggregate view of it. It displays separate information for both front-end and back-end roles.
 
 	![Windows Azure Dashboard ](Images/windows-azure-dashboard.png?raw=true "Windows Azure Dashboard ")
 
 	_Windows Azure dashboard_
 
-1. Show that you have Production and Staging enviroments and how you can swap between them.
+1. Show that you have Production and Staging environments and how you can swap between them.
 
 	>**Speaking Point:** We are having deployments in Production and in Staging. The Swap Deployment operation initiates a virtual IP swap between staging and production deployment environments for a service. If the service is currently running in the staging environment, it will be swapped to the production environment. If it is running in the production environment, it will be swapped to staging.
 
 	![portal swap environments ](Images/portal-swap-environments.png?raw=true)
 
-	_Swapping enviroments using the portal_
+	_Swapping environments using the portal_
 
 1. On the **Scale** page, show how you can scale up the number of web and worker role instances independently.
 
@@ -43,7 +43,7 @@ In this segment, you will monitor and manage the Windows Azure Cloud Services th
 
 	_Windows Azure portal metrics_
 
-1. Navigate to the **Windows Azure Store** menu by clicking on **New** | **Store**. Scroll over all the avaiable add-ons to show the multiple options that users have for extending their apps.
+1. Navigate to the **Windows Azure Store** menu by clicking on **New** | **Store**. Scroll over all the available add-ons to show the multiple options that users have for extending their apps.
 
 	>**Speaking Point:** The management portal makes it incredibly easy in the same way that we could create a new website, create a new virtual machine or mobile service, we can just go inside the portal and say new - store, and this will go ahead and bring up a list of services provided from Microsoft partners.
 
@@ -51,7 +51,7 @@ In this segment, you will monitor and manage the Windows Azure Cloud Services th
 
 1. Select **New Relic** from the list.
 
-	>**Speaking Point:** We will just try out the **New Relic** add-on as an example. It provides additional rich monitoring and outside-in monitoring support that we can take advantage now easily within Windows Azure.
+	>**Speaking Point:** We will just try out the **New Relic** add-on as an example. It provides additional rich monitoring and outside-in monitoring support that we can take advantage of now easily within Windows Azure.
 
 	![Adding New Relic Add-On](Images/adding-new-relic-add-on.png?raw=true "Adding New Relic Add-On")
 
@@ -71,7 +71,7 @@ In this segment, you will monitor and manage the Windows Azure Cloud Services th
 
 1. Navigate to the **Add-ons** section of the **Windows Azure Management portal** and select your previously created **New Relic** service. Show the dashboard options that the service offers.
 
-	>**Speaking Point:** This is the service dashboard. We can see at a high-level what's going on with the service. We can get the connection info, so if we need for example, the developer key in order to setup New Relic in our application and allow it log data and send it to New Relic, we can do that. We can also upgrade it to the professional account later, if we want to.
+	>**Speaking Point:** This is the service dashboard. We can see at a high level what's going on with the service. We can get the connection info, so if we need for example, the developer key in order to set up New Relic in our application and allow it to log data and send it to New Relic, we can do that. We can also upgrade it to the professional account later, if we want to.
 
 	![New Relic Azure Dashboard](Images/new-relic-azure-dashboard.png?raw=true "New Relic Azure Dashboard")
 
@@ -87,7 +87,7 @@ In this segment, you will monitor and manage the Windows Azure Cloud Services th
 
 1. Click on the **buildclips** application to drill into the service.
 
-	>**Speaking Point:** We can see how our app server is doing from a health perspective. Once we drill-down into an application, we can observe a quick overview of our application server including server processing time, our KPI scores as well as system throughputs.
+	>**Speaking Point:** We can see how our app server is doing from a health perspective. Once we drill down into an application, we can observe a quick overview of our application server including server processing time, our KPI scores as well as system throughputs.
 
 	![Service Overview](Images/newrelic-n1.png?raw=true "Application Overview")
 
@@ -99,7 +99,7 @@ In this segment, you will monitor and manage the Windows Azure Cloud Services th
 
 	>**Speaking Point:** They have some pretty cool features that allow us to see how browsers are doing, so we can actually see a browser view of responsiveness of the app in real time as well as how it's performing from various geographic locations around the country and around the world.
 
-	>Two most important response times in performance tuning are shown in the upper-left corner - client perceived response time and server processing time. Client perceived response time is important because that's what our customers care about. Server processing time is useful when you try to fine tune performances of specific server APIs.
+	>Two most important response times in performance tuning are shown in the upper-left corner - client perceived response time and server processing time. Client perceived response time is important because that's what our customers care about. Server processing time is useful when you try to fine-tune performances of specific server APIs.
 
 	![Browser view](Images/newrelic-n2.png?raw=true "Browser view")
 

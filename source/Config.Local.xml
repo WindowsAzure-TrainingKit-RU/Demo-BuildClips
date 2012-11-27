@@ -16,6 +16,7 @@
         <appConfigAsset>assets\Segment3\BackgroundService\app.config</appConfigAsset>
         <serviceConfiguration>BuildClips.Web\BuildClips.Azure\ServiceConfiguration.Cloud.cscfg</serviceConfiguration>
         <serviceDefinition>BuildClips.Web\BuildClips.Azure\ServiceDefinition.csdef</serviceDefinition>
+        <videosDir>.\setup\assets\videos</videosDir>
     </localPaths>
 
     <appSettings>

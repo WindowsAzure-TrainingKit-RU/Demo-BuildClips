@@ -3,8 +3,7 @@
 
 In this segment, you will configure Media Services in the Windows Azure Management portal and then you will update the application to submit an encoding job to Media Services when a video is uploaded.
 
-
-> **Important:**  Before proceding with this segment you will either have to:
+> **Important:**  Before proceeding with this segment you will either have to:
 
 > - Use the begin solutions of segment #2, located in **[working directory]\BuildClipsMedia**, instead of continuing with the end solutions from segment #1.
 
@@ -17,7 +16,7 @@ In this segment, you will configure Media Services in the Windows Azure Manageme
 --
 
 > **Speaking point:** What I'm going to do now is scale that app even further. The first way we're going to do that is by integrating another service called Windows Azure Media Services. And what Media Services allows you to do is very easily ingest, encode or transcode video, and then set up a streaming end point that you can use in order to stream your video to the cloud. Now, instead of storing it directly to storage, we're going to fire it off to Media Services, which will then encode it for us automatically, and then we're going to stand up a media streaming endpoint, which is going to allow our clients to be able to go ahead and stream it from a scalable back end.
-And the beauty about Windows Azure Media Services is that it exposes a REST API that makes it really easy for you as developers to integrate within your applications, and it takes care of all the infrastructure necessary for us. So we don’t have to spin up VMs, we don’t have to manage our own encoders or streaming servers. Instead, Windows Azure Media Services does all that for us.
+And the beauty about Windows Azure Media Services is that it exposes a REST API that makes it really easy for you as developers to integrate within your applications, and it takes care of all the infrastructure necessary for us. So we don't have to spin up VMs, we don't have to manage our own encoders or streaming servers. Instead, Windows Azure Media Services does all that for us.
 
 1. Start in the Windows Azure Management Portal, in the **All Items** node.
 
@@ -72,7 +71,7 @@ And the beauty about Windows Azure Media Services is that it exposes a REST API 
 	> And then the cool thing is when you actually want to play something, you can just go ahead, click on a video, click play, and even directly within the browser here, you can go ahead and test out your video, including with adaptive streaming. So very easy way you can test out and kind of learn how to use the product and quickly see the status of different jobs that you're working on.
 
 	> **Note:**
-	> Even when the publish operation seems to be done, I might take a few more seconds for the video to be really ready - 30-45 secs.  
+	> Even when the publish operation seems to be done, it might take a few more seconds for the video to be really ready - 30-45 secs.  
 
 	![Playing smooth streaming video](Images/playing-smooth-streaming-video.png?raw=true)
 
@@ -94,7 +93,7 @@ And the beauty about Windows Azure Media Services is that it exposes a REST API 
 
 1. Open **VideoService.cs** and scroll down to the **CreateVideoAsync** method. Replace the **TODO** comment, and the next four lines with the code below.
 	
-	(Code Snippet - _Build - VideoService.cs - Create_)
+	(Code Snippet - _VideoService.cs - Create_)
 	<!-- mark:1-13 -->
 	````C#
 	// Create an instance of the CloudMediaContext
@@ -121,7 +120,7 @@ And the beauty about Windows Azure Media Services is that it exposes a REST API 
 	> **Speaking Point:** 
 	> And then when I want to publish it so that people can stream it, I can just go ahead and call video services publisher, and this is then going to just call and publish that video on the job object that was encoded and get me back a URL that I can now pass off to my clients to play.
 
-	(Code Snippet - _Build - VideoService.cs - Publish_)
+	(Code Snippet - _VideoService.cs - Publish_)
 	<!-- mark:1-4 -->
 	````C#
     var mediaContext = new CloudMediaContext(
@@ -134,7 +133,7 @@ And the beauty about Windows Azure Media Services is that it exposes a REST API 
 	> **Speaking Point:** 
 	> Finally, let me add a new method to the video service that we'll be using shortly to retrieve the list of encoding jobs that are in progress and completed. This will allow me, for example, to run a background process to check the active jobs, report the status of the jobs in progress and also publish the videos already encoded.
 
-	(Code Snippet - _Build - VideoService.cs - GetActiveJobs_)
+	(Code Snippet - _VideoService.cs - GetActiveJobs_)
 	<!-- mark:1-26 -->
 	````C#
     public IEnumerable<Video> GetActiveJobs()
@@ -176,7 +175,7 @@ And the beauty about Windows Azure Media Services is that it exposes a REST API 
 1. Click the **Settings** page, expand **File Publish Options** and check the **Remove additional files at destination** option. Then click **Publish**.
 
 	> **Speaking Point:** 
-	> So before start publishing, I'm going to configure the publishing to remove all files that won't be requierd any more. And so you can see here, instead of having to redeploy the entire app, it's just showing me the differences between what's on my local dev machine and then what's in the cloud, so it makes deployment a lot faster. Those changes are now already live. 
+	> So before we start publishing, I'm going to configure the publishing to remove all files that won't be required anymore. And so you can see here, instead of having to redeploy the entire app, it's just showing me the differences between what's on my local dev machine and then what's in the cloud, so it makes deployment a lot faster. Those changes are now already live. 
 
 	![Publish web site](Images/publish-web-settings.png?raw=true)
 
@@ -214,7 +213,7 @@ And the beauty about Windows Azure Media Services is that it exposes a REST API 
 1. Go to the **Content** section of the media service and show the video uploaded and the running encoding job.
 
 	> **Speaking Point:**
-	> I'm going to go back into the portal, click the content tab, and you can see can see that my video has been, and hey, we've got two new files that have just shown up. One is the file we uploaded, and one is an adaptive streaming job that we just kicked off. And if I go ahead and hit play, what I should be able to do inside the portal is see all of you. 
+	> I'm going to go back into the portal, click the content tab, and you can see that my video has been, and hey, we've got two new files that have just shown up. One is the file we uploaded, and one is an adaptive streaming job that we just kicked off. And if I go ahead and hit play, what I should be able to do inside the portal is see all of you. 
 
 	![Encoding the video](Images/encoding-the-video.png?raw=true)
 

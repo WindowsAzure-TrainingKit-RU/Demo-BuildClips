@@ -23,7 +23,7 @@ In this segment, you will evolve the Video web project into an n-tier solution t
 
 1. Expand the **BuildClips.Azure** cloud service project, right-click the **BuildClips** role and select **Properties**. In the **Endpoints** tab, change the value of the Public Port column to **81**.
 
-	> **Speaking Point:** And you'll notice it's automatically added a role, think of it like a tier, that points to my website that we built earlier. And I don’t have to change any code within the website in this particular scenario. By defult, our new role will be listening to port 80. Let me just change it to listen to the same port where our original website was listening to.
+	> **Speaking Point:** And you'll notice it's automatically added a role, think of it like a tier, that points to my website that we built earlier. And I don't have to change any code within the website in this particular scenario. By default, our new role will be listening to port 80. Let me just change it to listen to the same port where our original website was listening.
 
 	![Web role properties option](Images/web-role-properties-option.png?raw=true)
 
@@ -77,7 +77,7 @@ In this segment, you will evolve the Video web project into an n-tier solution t
 
 1. Replace the configuration file with a new one that has the Media Service connection string values already defined. To do this, right-click the **BackgroundService** project and select **Add | Existing Item**. In the **Add Existing Item** dialog window, select  the file type filter to **All Files (*)**, and then select the **app.config** file inside **[working directory]\Assets\Segment3\BackgroundService**. Finally, click **Add** and then confirm to replace the existing file.
 
-	> **Speaking Point:** To complete al these  configurations in our worker, let me add to the project a pre-baked configuration file with our media service connection values already in place, so we don't need to spend any time doing this.
+	> **Speaking Point:** To complete all these  configurations in our worker, let me add to the project a pre-baked configuration file with our media service connection values already in place, so we don't need to spend any time doing this.
 
 	![add app.config](Images/add-appconfig.png?raw=true)
 
@@ -140,7 +140,7 @@ In this segment, you will evolve the Video web project into an n-tier solution t
 
 1. Open **Notifier.cs** file from the **Hubs** folder. Update the content of the class with the method from below. Then, place the cursor over the **JobStatus** type and press **CTRL+.**).
 
-	> **Speaking Point:** So let me do some small changes to this helper method. When this method gets called by the background service, so it's going to be firing messages to it, it's just broadcasting that message to any client that's listening on the hub, and this, works with both browsers as well as devices like Windows 8.
+	> **Speaking Point:** So let me do some small changes to this helper method. When this method gets called by the background service, so it's going to be firing messages to it, it's just broadcasting that message to any client that's listening on the hub, and this works with both browsers as well as devices like Windows 8.
 
 	(Code Snippet - _Notifier.cs - VideoUpdated_)
 	<!-- mark:3-6 -->
@@ -194,7 +194,7 @@ In this segment, you will evolve the Video web project into an n-tier solution t
 	using Microsoft.AspNet.SignalR.ServiceBus;
 	````
 
-1. Add the following code at the beginning of the *Application_Start* method to connect the web application with the service bus. Place de cursor over the **RoleEnvironment** and press **CTRL+.** to add the using statement.
+1. Add the following code at the beginning of the *Application_Start* method to connect the web application with the service bus. Place the cursor over the **RoleEnvironment** and press **CTRL+.** to add the using statement.
 
 	> **Speaking Point:** Now let's connect SignalR to the Service Bus.  When our web application starts, we need to establish a connection to the Service Bus.  We just need to provide SignalR with the Service Bus namespace and key.  
 
@@ -307,7 +307,7 @@ In this segment, you will evolve the Video web project into an n-tier solution t
 
 	> **Speaking Point:** And now when I go ahead and run this application, what I will see is sort of a view of my app here.
 
-1. Login to the app with Facebook.
+1. Log in to the app with Facebook.
 
 	![Windows 8 app login with Facebook](Images/windows8-facebook-login.png?raw=true)
 
@@ -315,26 +315,31 @@ In this segment, you will evolve the Video web project into an n-tier solution t
 
 1. Right-click on the screen and click the **Upload** button.
 
-	> **Speaking Point:** I can go ahead now and upload a new video. This is running on my dev machine so I don’t have a camera.
+	> **Speaking Point:** I can go ahead now and upload a new video. This is running on my dev machine so I don't have a camera.
 
 	![Upload Video Button](Images/windows8-upload-button.png?raw=true)
 	
 	_Upload Video Button_
 
-1. Enter a title, description, select some tags, and upload a video from the videos folder.
+1. Enter a title, description, select some tags, and upload a video from the **[working dir]\Assets\videos** folder.
 
 	![Uploading a Video](Images/windows8-upload-video.png?raw=true)
 	
 	_Uploading a Video_
 
 	> **Speaking Point:**
-	>  This is running on my dev machine so I don’t have a camera. So I can select a video. Going to upload it now to my local emulated environment that's running, again, on my local development machine. It's then calling out to Windows Azure Media Services in the cloud, and so it's going to be, again, making another REST call out to Windows Azure Media Services, which is then going to store it, kick off the encoding tasks on it.
+	>  This is running on my dev machine so I don't have a camera. So I can select a video. Going to upload it now to my local emulated environment that's running, again, on my local development machine. It's then calling out to Windows Azure Media Services in the cloud, and so it's going to be, again, making another REST call out to Windows Azure Media Services, which is then going to store it, kick off the encoding tasks on it.
 
 1. Once upload is completed, **go back to the video list page** and after a few seconds you will see the "encoding progress bar" in the new video, and the _last updated_ label being refreshed periodically. 
 
-	> **Note:** And now when I go back here, you'll notice that our UI is showing a placeholder for that video. And if you look closely at this time stamp here, what you should see about every five seconds or so, notice it's changing. And that's basically because our background service is waking up, checking on the status, firing messages to our ASP.NET app, which is then broadcasting it to all the listening clients that are connected.
+	> **Note:** And now when I go back here, you'll notice that our UI is showing a placeholder for that video. And if you look closely at this time stamp here, what you should see its' changing about every five seconds. And that's basically because our background service is waking up, checking on the status, firing messages to our ASP.NET app, which is then broadcasting it to all the listening clients that are connected.
+
+	![Video encoding notification thumbnail](Images/video-encoding-notification-thumbnail.png?raw=true)
+	
+	_Video encoding notification_
 
 1. Switch to the **Visual Studio** instance with the **BuildClips** Web application.
+
 	> **Note:** And the beauty about this architecture is it will work not just with one machine on my local desktop, but if I have thousands or hundreds of thousands of clients connected, they'll all get those real-time updates, and I can kind of provide a nice user experience for them to use. So we've built our app now. We can go ahead and deploy it into Windows Azure. 
 
 1. Right-click the **BuildClips.Azure** cloud project and select **Publish**. Click **Import** and open the publish settings file located in **Downloads**.
@@ -355,11 +360,11 @@ In this segment, you will evolve the Video web project into an n-tier solution t
 
 1. Talk about the publishing workflow (do not click **Publish**).
 
-	> **Speaking Point:** When I go ahead and hit publish, Visual Studio packages that up into what's called a service package file. It's going to be like a zip file, and upload it into Windows Azure. And then what Windows Azure's going to do is it's going to find appropriate servers to run within the datacenter, automatically select them for me, image them with whatever operating system or dependencies I need, and then install my application on them. And once that application is deployed on it, it will automatically wire up a network load balancer and start sending traffic to the application. And the beauty about cloud services is it's fully automated for me. I don't have to manually set up the machines. All that is handled for me by the core platform.
+	> **Speaking Point:** When I go ahead and hit publish, Visual Studio packages that up into what's called a service package file. It's going to be like a zip file, and uploads it into Windows Azure. And then what Windows Azure's going to do is it's going to find appropriate servers to run within the datacenter, automatically select them for me, image them with whatever operating system or dependencies I need, and then install my application on them. And once that application is deployed on it, it will automatically wire up a network load balancer and start sending traffic to the application. And the beauty about cloud services is it's fully automated for me. I don't have to manually set up the machines. All that is handled for me by the core platform.
 
 	![Visual Studio publish cloud service summary](Images/cloud-service-publish-summary.png?raw=true)
 
 	_Visual Studio publish cloud service summary_
 
-	> **Note:** In order to publish the service, you first need to change the database connection string to point to an Azure SQL Database (in both web.config and app.config files of the web and worker roles respectivelly) and also modify the _ApiBaseUrl_ in the app.config file to point to your Windows Azure Cloud Service address (_http://{your-cloud-service}.cloudapp.net_):
+	> **Note:** In order to publish the service, you first need to change the database connection string to point to an Azure SQL Database (in both web.config and app.config files of the web and worker roles respectively) and also modify the _ApiBaseUrl_ in the app.config file to point to your Windows Azure Cloud Service address (_http://{your-cloud-service}.cloudapp.net_):
 

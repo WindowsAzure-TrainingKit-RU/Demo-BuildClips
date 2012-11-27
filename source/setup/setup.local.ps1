@@ -36,6 +36,8 @@ if($demoSettingsFile -eq $nul -or $demoSettingsFile -eq "")
 $configNode = $xmlDemoSettings.configuration.appSettings
 [string] $manualResetFile = Resolve-Path $xmlDemoSettings.configuration.manualResetFile
 
+[string] $videosDir = Resolve-Path $xmlDemoSettings.configuration.localPaths.videosDir
+
 popd
 # "========= Main Script =========" #
 
@@ -125,8 +127,8 @@ write-host "Update app config settings in Begin solution done!"
 write-host
 write-host
 write-host "========= Resetting Azure Compute Emulator & Dev Storage...  =========" -ForegroundColor Yellow
-$CSRunFile = "C:\Program Files\Microsoft SDKs\Windows Azure\Emulator\csrun.exe"
-$DSInitFile = "C:\Program Files\Microsoft SDKs\Windows Azure\Emulator\devstore\DSInit.exe"
+$CSRunFile = Join-Path $env:ProgramFiles "\Microsoft SDKs\Windows Azure\Emulator\csrun.exe"
+$DSInitFile = Join-Path $env:ProgramFiles "\Microsoft SDKs\Windows Azure\Emulator\devstore\DSInit.exe"
 & $CSRunFile @("/devfabric:start")
 & $CSRunFile @("/devstore:start")
 & $CSRunFile @("/devstore:shutdown")
@@ -139,24 +141,49 @@ Start-Process $DSInitFile @("/ForceCreate", "/silent") -Wait
 & $CSRunFile @("/removeAll")
 write-host "Resetting Azure Comoute Emulator & Dev Storage Done!"
 
+write-host
+write-host
+write-host "========= Compiling Web Site Solution... ========="
+$MsBuildFile = Join-Path $env:windir "\Microsoft.NET\Framework\v4.0.30319\MsBuild.exe"
+[string] $beginSolutionFile = Join-Path $solutionWorkingDir "BuildClips.Web\BuildClips.sln"
+& $MsBuildFile @($beginSolutionFile, "/p:Configuration=Debug")
+write-host "Compiling Begin Web Site Solution Done!"
 
 write-host
 write-host
 write-host "========= Configuring IIS Express Web Site... ========="
-[string] $appCmdFile = "C:\Program Files (x86)\IIS Express\appcmd.exe"
-[string] $webSolutionfolder = Join-Path $beginSolutionDir "BuildClips.Web\BuildClips"
+[string] $appCmdFile = Join-Path ${env:ProgramFiles(x86)} "\IIS Express\appcmd.exe"
+[string] $webSolutionfolder = Join-Path $solutionWorkingDir "BuildClips.Web\BuildClips"
 # Add BuildClips site
 & $appCmdFile @("add", "site", "/name:BuildClips", "/bindings:http://127.0.0.1:81", "/physicalpath:""$webSolutionfolder""")
 # Set App Pool
 & $appCmdFile @("set", "app", "BuildClips/", "/applicationpool:Clr4IntegratedAppPool")
 # Stop IIS Express
 Get-Process | Where-Object {$_.ProcessName -eq "iisexpress"} | Stop-Process
-write-host "Configuring Web Site Done!"
-
+write-host "Configuring IIS Express Web Site Done!"
 
 write-host
 write-host
-write-host "========= Installing Code Snippets ... ========="
+write-host "========= Running Local Web Site... ========="
+[string] $IISExpressFile = Join-Path ${env:ProgramFiles(x86)} "\IIS Express\iisexpress.exe"
+Start-Process $IISExpressFile @("/site:BuildClips") -WindowStyle Hidden
+write-host "Running Local Web Site Done!"
+
+write-host
+write-host
+write-host "========= Uploading Sample Videos to Local Web Site... ========="
+.\tasks\uploadVideos $videosDir "http://127.0.0.1:81/api/videos"
+write-host "Uploading Sample Videos to Local Web Site Done!"
+
+write-host
+write-host
+write-host "========= Stopping Local Web Site... ========="
+Get-Process | Where-Object {$_.ProcessName -eq "iisexpress"} | Stop-Process
+write-host "Stopping Local Web Site Done!"
+
+write-host
+write-host
+write-host "========= Installing Code Snippets... ========="
 [string] $documentsFolder = [Environment]::GetFolderPath("MyDocuments")
 if (-NOT (test-path "$documentsFolder"))
 {

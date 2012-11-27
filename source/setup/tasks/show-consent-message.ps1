@@ -13,8 +13,9 @@ if ($SetupLocal.IsPresent) {
     Write-Host "8. Update the App config settings for the Begin solution"
     Write-Host "9. Reset Azure Compute Emulator and Dev Storage" -ForegroundColor Yellow
     Write-Host "10. Configure IIS Express Web Site"
-    Write-Host "11. Install the code snippets for the demo"
-    Write-Host "12. Open Manual Reset steps file"
+    Write-Host "11. Upload sample videos to the local Web Site"
+    Write-Host "12. Install the code snippets for the demo"
+    Write-Host "13. Open Manual Reset steps file"
 }
 
 if ($ResetLocal.IsPresent) {
@@ -34,8 +35,9 @@ if ($ResetLocal.IsPresent) {
     Write-Host "12. Update the App config settings for the Begin solution"
     Write-Host "13. Reset Azure Compute Emulator and Dev Storage" -ForegroundColor Yellow
     Write-Host "14. Configure IIS Express Web Site"
-    Write-Host "15. Install the code snippets for the demo"
-    Write-Host "16. Open Manual Reset steps file"
+    Write-Host "15. Upload sample videos to the local Web Site"
+    Write-Host "16. Install the code snippets for the demo"
+    Write-Host "17. Open Manual Reset steps file"
 }
 
 if ($CleanupLocal.IsPresent) {

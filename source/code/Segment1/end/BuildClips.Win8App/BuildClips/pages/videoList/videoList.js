@@ -165,7 +165,7 @@
 
                             for (var i in progress) {
                                 if (progress[i].style) {
-                                    progress[i].style.display = "none";
+                                    progress[i].style.visibility = "hidden";
                                 }
                             }
                         }, 5000);

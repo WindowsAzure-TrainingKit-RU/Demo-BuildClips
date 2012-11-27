@@ -60,7 +60,7 @@ As you proceed with these manual configuration tasks, you will be required to up
 In the **source** folder, you will find several scripts that carry out different setup and cleanup tasks including:
  
 - **Setup.Local.cmd**: verifies dependencies, creates the working directory and copies the source files to this directory, updates the configuration of the solutions with the configured settings. You typically run this script once, before running the demo for the first time.
-- **Cleanup.Local.cmd**: deletes the working directory and local database and resets the storage emulator. This script will allow you to reset the environment to its original state, after you have finished the demo.
+- **Cleanup.Local.cmd**: deletes the working directory and local database and resets the storage emulator. This script will allow you to reset the environment to its original state after you have finished the demo.
 - **Reset.Local.cmd**: executes the cleanup script to reset the environment and runs a reduced setup that does not verify dependencies. This script prepares the environment for running the demo again.
 - **Setup.Deployment.cmd**: configures the solution used by segment #5. This script is used before deploying the solution to Windows Azure.
 
@@ -75,7 +75,7 @@ To create a service namespace:
 
 1. In the **CREATE A NAMESPACE** dialog box, enter the **NAMESPACE NAME**, select a **REGION**, and then click the check mark to confirm the action.
 
-	> **Note:** Make sure to select the same region for all the assets that you create in Windows Azure for this demo, typically, the one that is closest to you.
+	> **Note:** Make sure to select the same region for all the assets that you create in Windows Azure for this demo, typically the one closest to you.
 
 	![Creating a new Service Namespace](Images/service-bus-add-namespace.png?raw=true)
 
@@ -96,7 +96,7 @@ To create the storage accounts:
 
 1. Enter a unique subdomain for the **URL** of the storage account that you will use to store your media, select a **REGION/AFFINITY GROUP**, and then click the **CREATE STORAGE ACCOUNT** check mark.
 
-	> **Note:** Make sure to select the same region for all the assets that you create in Windows Azure for this demo, typically, the one that is closest to you.
+	> **Note:** Make sure to select the same region for all the assets that you create in Windows Azure for this demo, typically the one closest to you.
 
 	![Creating a new Service Namespace](Images/storage-account-create.png?raw=true)
 
@@ -121,7 +121,7 @@ To create a new Media Services account:
 
 1. Enter the **NAME** of the service, select a **REGION**, select the **STORAGE ACCOUNT** that you created previously to hold your media from the drop-down list, and then click the **CREATE MEDIA SERVICE** check mark.
 
-	> **Note:** Make sure to select the same region for all the assets that you create in Windows Azure for this demo, typically, the one that is closest to you.
+	> **Note:** Make sure to select the same region for all the assets that you create in Windows Azure for this demo, typically the one closest to you.
 
 	![Creating the Media Service](Images/create-media-service.png?raw=true)
 
@@ -142,11 +142,11 @@ To create a new cloud service:
 
 1. Enter a unique subdomain for the **URL** of the cloud service, select a **REGION**, and then click the **CREATE CLOUD SERVICE** check mark.
 
-	> **Note:** Make sure to select the same region for all the assets that you create in Windows Azure for this demo, typically, the one that is closest to you.
+	> **Note:** Make sure to select the same region for all the assets that you create in Windows Azure for this demo, typically the one closest to you.
 
 	![Creating the Cloud Service](Images/create-cloud-service.png?raw=true)
 
-> **Note:** A cloud service is necessary for one of the segments in this demo that shows how to publish to a cloud service from Visual Studio. The segment walks through the steps but does not proceed with the deployment. In addition, the final, optional, segment of this demo, [Deploying and Managing Windows Azure Apps](#segment5), also requires a cloud service where you deploy the demo's solution. You may use a single cloud service for both purposes. However, if you prefer to minimize the risk of accidentally overwriting the deployment while showing the first segment, you may want to create an additional cloud service for this other segment.
+> **Note:** A cloud service is necessary for one of the segments in this demo that shows how to publish to a cloud service from Visual Studio. The segment walks through the steps but does not proceed with the deployment. In addition, the final and optional segment of this demo, [Deploying and Managing Windows Azure Apps](#segment5), also requires a cloud service where you deploy the demo's solution. You may use a single cloud service for both purposes. However, if you prefer to minimize the risk of accidentally overwriting the deployment while showing the first segment, you may want to create an additional cloud service for this other segment.
 
 1. In the **appSettings** section of the **Config.local.xml** file, locate the **cloudService** subsection and replace the placeholder in the **apiBaseUrl** setting with the name of the newly created cloud service. 
 
@@ -155,7 +155,7 @@ To create a new cloud service:
 <a name="setup5" />
 **Creating a Windows Azure SQL Database (optional)**
 
-The deployment for the final, optional, segment of this demo, [Deploying and Managing Windows Azure Apps](#segment5), requires the creation of a SQL Database. You may skip this section if you do not intend to show this segment.
+The deployment for the final, optional segment of this demo, [Deploying and Managing Windows Azure Apps](#segment5), requires the creation of a SQL Database. You may skip this section if you do not intend to show this segment.
 
 To create the database:
 
@@ -192,7 +192,7 @@ The application used in this demo allows users to log in using one of several co
 
 	Note that you need to create at least two entries in each provider, one for running the application locally using [http://127.0.0.1:81]() as the return (or callback) URL and the other for the URL of the site when deployed to Windows Azure Web Sites (e.g. [http://{YOUR-SITE-NAME}.azurewebsites.net/]()). 
 
-	>**Important:** Make sure that the URL for the Windows Azure Web Sites scenario that you specify to the identity provider is available when you deploy the site during the demo, so choose a site name that is unlikely to be in use. Alternatively, you may create the site in advance to reserve its name and, during the demo, simply walk through the process without creating the site. 
+	>**Important:** Make sure that the URL for the Windows Azure Web Sites scenario that you specify to the identity provider is available when you deploy the site during the demo by choosing a site name that is unlikely to be in use. Alternatively, you may create the site in advance to reserve its name and, during the demo, simply walk through the process without creating the site. 
 	
 	In addition, an (optional) segment in this demo requires you to deploy the application as a cloud service. If you intend to complete this segment, you also need to configure a third entry for the cloud service's URL (e.g. [http://{YOUR-CLOUD-SERVICE-NAME}.cloudapp.net]()). Use the cloud service name that you created earlier, as described in [Creating a Cloud Service](#setup4).
 
@@ -214,7 +214,7 @@ Once you have completed the previous tasks and updated the **Config.local.xml** 
 <a name="setup9" />
 **Deploying the Application as a Cloud Service and Configuring New Relic (optional)**
 
-The following procedure sets up the deployment used for the final, optional, segment of this demo, [Deploying and Managing Windows Azure Apps](#segment5). It shows how to acquire the New Relic (free) add-on from the Windows Azure Store, configure it for the solution, and deploy the application to a cloud service.
+The following procedure sets up the deployment used for the final and optional segment of this demo, [Deploying and Managing Windows Azure Apps](#segment5). It shows how to acquire the New Relic (free) add-on from the Windows Azure Store, configure it for the solution, and deploy the application to a cloud service.
 
 1. In the **Windows Azure Management Portal**, click **New** and then **Store**.
 
@@ -280,10 +280,9 @@ The following procedure sets up the deployment used for the final, optional, seg
 </html>
 ````
 
-
 1. Now, right-click the **BuildClips.Azure** project in **Solution Explorer** and then select **Publish**.
 
-1. In the **Publish Windows Azure Application** wizard, if this the first time you publish an application to the Windows Azure subscription that you will use for this demo, choose **Import**, browse to the **Downloads** folder and select the publish settings file that you downloaded earlier from the Management Portal. 
+1. In the **Publish Windows Azure Application** wizard, if this is your first time publishing an application to the Windows Azure subscription to be used for this demo, choose **Import**, browse to the **Downloads** folder and select the publish settings file that you downloaded earlier from the Management Portal. 
 
 1. Now, choose the subscription and then click **Next**.
 
@@ -324,13 +323,13 @@ In this segment, we will extend the web site to include Web APIs that power a Wi
 	>
 	> I've got my app right here. Let's go and launch this app
 	>
-	> **Note:** Make sure the port where the application will run is the 81, otherwise you will get an error when using Facebook login service.
+	> **Note:** Make sure the port where the application will run is number 81, otherwise you will get an error when using Facebook login service.
 	>
 	>To check this, open Web project's properties and verify that **Use Local IIS Web Server** is selected and it has this value: _http://127.0.0.1:81/_
 
 1. Log in to the application using Facebook. Provide your credentials.
 
-	> **Speaking Point**: You can see at the top there not only do I have the ability to log in via regular ASP.NET membership, but I've got a number of additional social identity providers like a Microsoft account, Twitter or Facebook. 
+	> **Speaking Point**: You can see at the top that not only do I have the ability to log in via regular ASP.NET membership, but I've got a number of additional social identity providers like a Microsoft account, Twitter or Facebook. 
 	>
 	> I'm going to log in via Facebook, and this is all built into the ASP.NET 4.5 API.
 
@@ -360,7 +359,7 @@ In this segment, we will extend the web site to include Web APIs that power a Wi
 
 1.	Talk about Facebook Authentication with DotNetOpenAuth. Open **App_Start/AuthConfig.cs**
 
-	> **Speaking Point**: We can now easily use DotNetOpenAuth for handling authentication with a variety of identity providers. In this application we are using Facebook for authentication. You can see how easy it is to setup Facebook authenticaiton in just a few lines of code. Similarly you could setup Google, Microsoft, and Twitter authentication.
+	> **Speaking Point**: We can now easily use DotNetOpenAuth for handling authentication with a variety of identity providers. In this application we are using Facebook for authentication. You can see how easy it is to set up Facebook authenticaiton in just a few lines of code. Similarly you could set up Google, Microsoft, and Twitter authentication.
 	>
 	> In addition to supporting Facebook authentication, we also have added a Facebook Application template in the ASP.NET Updates that makes it easy to build a Facebook App using the Facebook C# SDK.
 
@@ -370,9 +369,9 @@ In this segment, we will extend the web site to include Web APIs that power a Wi
 
 	> **Speaking Point**: After I log in, I can upload a video and the metadata for the video is stored in a SQL database. For that metadata we're using Entity Framework 6 Code First, and I'm going to take a look at the video context here.
 	>
-	> Note that with Code First the database and the schema are automatically generated. Additionally, using automatic migrations make it easy to iterate your data access code and database schema.
+	> Note that with Code First the database and the schema are automatically generated. Additionally, using automatic migrations makes it easy to iterate your data access code and database schema.
 	>
-	> We are using async and await to store this. This is really important because I know this application is going to be really popular. I'm going to make sure that I do all of my database IO in a non-blocking way. I make my new video, I add it and then I use async in a way to save those changes asynchronously. That releases that ASP.NET thread and back into the pool and then lets that IO happens in a non-blocking way.
+	> We are using async and await to store this. This is really important because I know this application is going to be really popular. I'm going to make sure that I do all of my database IO in a non-blocking way. I make my new video, I add it, and then I use async in a way to save those changes asynchronously. That releases the ASP.NET thread back into the pool and then lets that IO happen in a non-blocking way.
 
 1.	Discuss how we use Blob Storage to store the videos. Under the **BuildClips.Services** Project, open **VideoStorage.cs**. Show how easy it is to upload data to the blob. Show the Upload method and discuss how blob storage is scalable.
 
@@ -392,7 +391,7 @@ In this segment, we will extend the web site to include Web APIs that power a Wi
 
 	> **Speaking Point**: Now, I want to be able to access these videos from an API, from a Web API. I'm going to take those videos and expose them out to a Windows 8 application. This is an existing ASP.NET app, but I can still add a Web API to it. I can use Web API inside of Web forms or MVC, it's all one ASP.NET.
 	>
-	> In this example I've got a get and a post, and you'll notice on this post that I'm not taking the video as a parameter, I'm not using model binding in this instance because I could be uploading potentially many gigabytes of videos. I want to read that in using an asynchronous model as well. I can bring in many, many gigabytes of video without tying up that thread, again, allowing me to scale.
+	> In this example I've got a get and a post, and you'll notice on this post that I'm not taking the video as a parameter, I'm not using model binding in this instance because I could be uploading potentially many gigabytes of videos. I want to use an asynchronous model here as well. I can bring in many, many gigabytes of video without tying up that thread, again, allowing me to scale.
 
 1. Implement **Get** method for retrieving all the existing videos. Code snippet shortcut is **VideosControllercsGet**.
 
@@ -418,7 +417,8 @@ In this segment, we will extend the web site to include Web APIs that power a Wi
 	{
 		return this.service.GetAll();
 	}
-	```` 
+	````
+
 	> **Speaking Point**: But I might want to be able to query them a little bit more from the query string. Simply returning IQueryable and adding the [Queryable] attribute is all you need to enable OData queries on your REST service.
 
 1. Expand the **Areas** folder and show the **HelpPage** area. This area contains the Views to render the Web API Help Pages.
@@ -485,9 +485,15 @@ In this segment, we will extend the web site to include Web APIs that power a Wi
 
 	_Publishing the web site_
 
-1. In the **Settings** page, click **Next**.
+1. In the **Connection** page, click **Next**.
 
 	![publish connection](Images/publish-connection.png?raw=true)
+	
+	_Configuring the publish method_
+
+1. In the **Settings** page, click **Next**.
+
+	![publish settings](Images/publish-settings.png?raw=true)
 	
 	_Configuring the database connection string for the web site_
 
@@ -501,7 +507,7 @@ In this segment, we will extend the web site to include Web APIs that power a Wi
 
 1.	Once the publishing process finishes, go to the **Scale** tab in the portal and change the **Web Site Mode** to _Shared_. Change the number of instances to 3.
 
-	> **Speaking Point**: Now that my application is deployed and because I know this is going to be popular I'm going to go over to scale. In scale here, I can go and select not just that I want a free website, even though I get ten free websites, but I could say shared and have multiple instances or reserved and have even four cores and three instances of that. So I've got a lot of flexibility in my elasticity in Azure.
+	> **Speaking Point**: Now that my application is deployed and because I know this is going to be popular I'm going to go over to scale. In scale here, I can go and select not just that I want a free website, even though I get ten free websites, but I could say shared and have multiple instances or reserved and have even four cores and three instances of that. So I've got a lot of flexibility in the way I can scale my website in Azure.
 
 	![portal sharedmode](Images/portal-sharedmode.png?raw=true)
 
@@ -519,6 +525,8 @@ In this segment, we will extend the web site to include Web APIs that power a Wi
 
 	![portal manage domains](Images/portal-managedomains.png?raw=true)
 
+	_Manage domains using the Windows Azure portal_
+
 1. Navigate to the recently deployed application and upload a video that will be now stored in the cloud. You can use any of the videos from the **[working dir]\Assets\videos** folder.
 
 	> **Speaking Point:** So now, let's upload a new video to my recently deployed application. 
@@ -531,7 +539,7 @@ In this segment, we will extend the web site to include Web APIs that power a Wi
 
 	> **Speaking Point:** So now I'm going to consume that from Windows 8. And since I've been doing a lot of work in JavaScript and curly braces lately, I wrote the entire application in JavaScript. So this is a native Win8 application in the store that is written in JavaScript.
 
-1.	Show the code for calling the Web API. In the **webapi.js** file, highlight **getVideos()** method. Additionally, in the **data.js** file, highlight the **GetVideosOnSuccess()** method
+1.	Show the code for calling the Web API. In the **webapi.js** file, highlight **getVideos()** method. Additionally, in the **data.js** file, highlight the **GetVideosOnSuccess()** method.
 	
 	<!-- mark:3-4 -->
 	````JavaScript
@@ -571,7 +579,7 @@ In this segment, we will extend the web site to include Web APIs that power a Wi
 	
 	_Log into the Windows 8 App using Facebook Service_
 
-1. If you chose to authenticate using Facebook and the _Application Consent_ page is shown, click **Allow**. In case you have chosen to authenticate using Twitter, and the _Authorize Application_ page is shown, click **Authorize App** to continue.
+1. If you chose to authenticate using Facebook and the _Application Consent_ page is shown, click **Allow**. If you have chosen to authenticate using Twitter, and the _Authorize Application_ page is shown, click **Authorize App** to continue.
 
 1. Click on the video to show that it is consuming the published Web API.
 
@@ -591,8 +599,7 @@ In this segment, we will extend the web site to include Web APIs that power a Wi
 
 In this segment, you will configure Media Services in the Windows Azure Management portal and then you will update the application to submit an encoding job to Media Services when a video is uploaded.
 
-
-> **Important:**  Before proceding with this segment you will either have to:
+> **Important:**  Before proceeding with this segment you will either have to:
 
 > - Use the begin solutions of segment #2, located in **[working directory]\BuildClipsMedia**, instead of continuing with the end solutions from segment #1.
 
@@ -605,7 +612,7 @@ In this segment, you will configure Media Services in the Windows Azure Manageme
 --
 
 > **Speaking point:** What I'm going to do now is scale that app even further. The first way we're going to do that is by integrating another service called Windows Azure Media Services. And what Media Services allows you to do is very easily ingest, encode or transcode video, and then set up a streaming end point that you can use in order to stream your video to the cloud. Now, instead of storing it directly to storage, we're going to fire it off to Media Services, which will then encode it for us automatically, and then we're going to stand up a media streaming endpoint, which is going to allow our clients to be able to go ahead and stream it from a scalable back end.
-And the beauty about Windows Azure Media Services is that it exposes a REST API that makes it really easy for you as developers to integrate within your applications, and it takes care of all the infrastructure necessary for us. So we don’t have to spin up VMs, we don’t have to manage our own encoders or streaming servers. Instead, Windows Azure Media Services does all that for us.
+And the beauty about Windows Azure Media Services is that it exposes a REST API that makes it really easy for you as developers to integrate within your applications, and it takes care of all the infrastructure necessary for us. So we don't have to spin up VMs, we don't have to manage our own encoders or streaming servers. Instead, Windows Azure Media Services does all that for us.
 
 1. Start in the Windows Azure Management Portal, in the **All Items** node.
 
@@ -660,7 +667,7 @@ And the beauty about Windows Azure Media Services is that it exposes a REST API 
 	> And then the cool thing is when you actually want to play something, you can just go ahead, click on a video, click play, and even directly within the browser here, you can go ahead and test out your video, including with adaptive streaming. So very easy way you can test out and kind of learn how to use the product and quickly see the status of different jobs that you're working on.
 
 	> **Note:**
-	> Even when the publish operation seems to be done, I might take a few more seconds for the video to be really ready - 30-45 secs.  
+	> Even when the publish operation seems to be done, it might take a few more seconds for the video to be really ready - 30-45 secs.  
 
 	![Playing smooth streaming video](Images/playing-smooth-streaming-video.png?raw=true)
 
@@ -682,7 +689,7 @@ And the beauty about Windows Azure Media Services is that it exposes a REST API 
 
 1. Open **VideoService.cs** and scroll down to the **CreateVideoAsync** method. Replace the **TODO** comment, and the next four lines with the code below.
 	
-	(Code Snippet - _Build - VideoService.cs - Create_)
+	(Code Snippet - _VideoService.cs - Create_)
 	<!-- mark:1-13 -->
 	````C#
 	// Create an instance of the CloudMediaContext
@@ -709,7 +716,7 @@ And the beauty about Windows Azure Media Services is that it exposes a REST API 
 	> **Speaking Point:** 
 	> And then when I want to publish it so that people can stream it, I can just go ahead and call video services publisher, and this is then going to just call and publish that video on the job object that was encoded and get me back a URL that I can now pass off to my clients to play.
 
-	(Code Snippet - _Build - VideoService.cs - Publish_)
+	(Code Snippet - _VideoService.cs - Publish_)
 	<!-- mark:1-4 -->
 	````C#
     var mediaContext = new CloudMediaContext(
@@ -722,7 +729,7 @@ And the beauty about Windows Azure Media Services is that it exposes a REST API 
 	> **Speaking Point:** 
 	> Finally, let me add a new method to the video service that we'll be using shortly to retrieve the list of encoding jobs that are in progress and completed. This will allow me, for example, to run a background process to check the active jobs, report the status of the jobs in progress and also publish the videos already encoded.
 
-	(Code Snippet - _Build - VideoService.cs - GetActiveJobs_)
+	(Code Snippet - _VideoService.cs - GetActiveJobs_)
 	<!-- mark:1-26 -->
 	````C#
     public IEnumerable<Video> GetActiveJobs()
@@ -764,7 +771,7 @@ And the beauty about Windows Azure Media Services is that it exposes a REST API 
 1. Click the **Settings** page, expand **File Publish Options** and check the **Remove additional files at destination** option. Then click **Publish**.
 
 	> **Speaking Point:** 
-	> So before start publishing, I'm going to configure the publishing to remove all files that won't be requierd any more. And so you can see here, instead of having to redeploy the entire app, it's just showing me the differences between what's on my local dev machine and then what's in the cloud, so it makes deployment a lot faster. Those changes are now already live. 
+	> So before we start publishing, I'm going to configure the publishing to remove all files that won't be required anymore. And so you can see here, instead of having to redeploy the entire app, it's just showing me the differences between what's on my local dev machine and then what's in the cloud, so it makes deployment a lot faster. Those changes are now already live. 
 
 	![Publish web site](Images/publish-web-settings.png?raw=true)
 
@@ -802,7 +809,7 @@ And the beauty about Windows Azure Media Services is that it exposes a REST API 
 1. Go to the **Content** section of the media service and show the video uploaded and the running encoding job.
 
 	> **Speaking Point:**
-	> I'm going to go back into the portal, click the content tab, and you can see can see that my video has been, and hey, we've got two new files that have just shown up. One is the file we uploaded, and one is an adaptive streaming job that we just kicked off. And if I go ahead and hit play, what I should be able to do inside the portal is see all of you. 
+	> I'm going to go back into the portal, click the content tab, and you can see that my video has been, and hey, we've got two new files that have just shown up. One is the file we uploaded, and one is an adaptive streaming job that we just kicked off. And if I go ahead and hit play, what I should be able to do inside the portal is see all of you. 
 
 	![Encoding the video](Images/encoding-the-video.png?raw=true)
 
@@ -832,7 +839,7 @@ In this segment, you will evolve the Video web project into an n-tier solution t
 
 1. Expand the **BuildClips.Azure** cloud service project, right-click the **BuildClips** role and select **Properties**. In the **Endpoints** tab, change the value of the Public Port column to **81**.
 
-	> **Speaking Point:** And you'll notice it's automatically added a role, think of it like a tier, that points to my website that we built earlier. And I don’t have to change any code within the website in this particular scenario. By defult, our new role will be listening to port 80. Let me just change it to listen to the same port where our original website was listening to.
+	> **Speaking Point:** And you'll notice it's automatically added a role, think of it like a tier, that points to my website that we built earlier. And I don't have to change any code within the website in this particular scenario. By default, our new role will be listening to port 80. Let me just change it to listen to the same port where our original website was listening.
 
 	![Web role properties option](Images/web-role-properties-option.png?raw=true)
 
@@ -886,7 +893,7 @@ In this segment, you will evolve the Video web project into an n-tier solution t
 
 1. Replace the configuration file with a new one that has the Media Service connection string values already defined. To do this, right-click the **BackgroundService** project and select **Add | Existing Item**. In the **Add Existing Item** dialog window, select  the file type filter to **All Files (*)**, and then select the **app.config** file inside **[working directory]\Assets\Segment3\BackgroundService**. Finally, click **Add** and then confirm to replace the existing file.
 
-	> **Speaking Point:** To complete al these  configurations in our worker, let me add to the project a pre-baked configuration file with our media service connection values already in place, so we don't need to spend any time doing this.
+	> **Speaking Point:** To complete all these  configurations in our worker, let me add to the project a pre-baked configuration file with our media service connection values already in place, so we don't need to spend any time doing this.
 
 	![add app.config](Images/add-appconfig.png?raw=true)
 
@@ -949,7 +956,7 @@ In this segment, you will evolve the Video web project into an n-tier solution t
 
 1. Open **Notifier.cs** file from the **Hubs** folder. Update the content of the class with the method from below. Then, place the cursor over the **JobStatus** type and press **CTRL+.**).
 
-	> **Speaking Point:** So let me do some small changes to this helper method. When this method gets called by the background service, so it's going to be firing messages to it, it's just broadcasting that message to any client that's listening on the hub, and this, works with both browsers as well as devices like Windows 8.
+	> **Speaking Point:** So let me do some small changes to this helper method. When this method gets called by the background service, so it's going to be firing messages to it, it's just broadcasting that message to any client that's listening on the hub, and this works with both browsers as well as devices like Windows 8.
 
 	(Code Snippet - _Notifier.cs - VideoUpdated_)
 	<!-- mark:3-6 -->
@@ -1003,7 +1010,7 @@ In this segment, you will evolve the Video web project into an n-tier solution t
 	using Microsoft.AspNet.SignalR.ServiceBus;
 	````
 
-1. Add the following code at the beginning of the *Application_Start* method to connect the web application with the service bus. Place de cursor over the **RoleEnvironment** and press **CTRL+.** to add the using statement.
+1. Add the following code at the beginning of the *Application_Start* method to connect the web application with the service bus. Place the cursor over the **RoleEnvironment** and press **CTRL+.** to add the using statement.
 
 	> **Speaking Point:** Now let's connect SignalR to the Service Bus.  When our web application starts, we need to establish a connection to the Service Bus.  We just need to provide SignalR with the Service Bus namespace and key.  
 
@@ -1116,7 +1123,7 @@ In this segment, you will evolve the Video web project into an n-tier solution t
 
 	> **Speaking Point:** And now when I go ahead and run this application, what I will see is sort of a view of my app here.
 
-1. Login to the app with Facebook.
+1. Log in to the app with Facebook.
 
 	![Windows 8 app login with Facebook](Images/windows8-facebook-login.png?raw=true)
 
@@ -1124,26 +1131,31 @@ In this segment, you will evolve the Video web project into an n-tier solution t
 
 1. Right-click on the screen and click the **Upload** button.
 
-	> **Speaking Point:** I can go ahead now and upload a new video. This is running on my dev machine so I don’t have a camera.
+	> **Speaking Point:** I can go ahead now and upload a new video. This is running on my dev machine so I don't have a camera.
 
 	![Upload Video Button](Images/windows8-upload-button.png?raw=true)
 	
 	_Upload Video Button_
 
-1. Enter a title, description, select some tags, and upload a video from the videos folder.
+1. Enter a title, description, select some tags, and upload a video from the **[working dir]\Assets\videos** folder.
 
 	![Uploading a Video](Images/windows8-upload-video.png?raw=true)
 	
 	_Uploading a Video_
 
 	> **Speaking Point:**
-	>  This is running on my dev machine so I don’t have a camera. So I can select a video. Going to upload it now to my local emulated environment that's running, again, on my local development machine. It's then calling out to Windows Azure Media Services in the cloud, and so it's going to be, again, making another REST call out to Windows Azure Media Services, which is then going to store it, kick off the encoding tasks on it.
+	>  This is running on my dev machine so I don't have a camera. So I can select a video. Going to upload it now to my local emulated environment that's running, again, on my local development machine. It's then calling out to Windows Azure Media Services in the cloud, and so it's going to be, again, making another REST call out to Windows Azure Media Services, which is then going to store it, kick off the encoding tasks on it.
 
 1. Once upload is completed, **go back to the video list page** and after a few seconds you will see the "encoding progress bar" in the new video, and the _last updated_ label being refreshed periodically. 
 
-	> **Note:** And now when I go back here, you'll notice that our UI is showing a placeholder for that video. And if you look closely at this time stamp here, what you should see about every five seconds or so, notice it's changing. And that's basically because our background service is waking up, checking on the status, firing messages to our ASP.NET app, which is then broadcasting it to all the listening clients that are connected.
+	> **Note:** And now when I go back here, you'll notice that our UI is showing a placeholder for that video. And if you look closely at this time stamp here, what you should see its' changing about every five seconds. And that's basically because our background service is waking up, checking on the status, firing messages to our ASP.NET app, which is then broadcasting it to all the listening clients that are connected.
+
+	![Video encoding notification thumbnail](Images/video-encoding-notification-thumbnail.png?raw=true)
+	
+	_Video encoding notification_
 
 1. Switch to the **Visual Studio** instance with the **BuildClips** Web application.
+
 	> **Note:** And the beauty about this architecture is it will work not just with one machine on my local desktop, but if I have thousands or hundreds of thousands of clients connected, they'll all get those real-time updates, and I can kind of provide a nice user experience for them to use. So we've built our app now. We can go ahead and deploy it into Windows Azure. 
 
 1. Right-click the **BuildClips.Azure** cloud project and select **Publish**. Click **Import** and open the publish settings file located in **Downloads**.
@@ -1164,13 +1176,13 @@ In this segment, you will evolve the Video web project into an n-tier solution t
 
 1. Talk about the publishing workflow (do not click **Publish**).
 
-	> **Speaking Point:** When I go ahead and hit publish, Visual Studio packages that up into what's called a service package file. It's going to be like a zip file, and upload it into Windows Azure. And then what Windows Azure's going to do is it's going to find appropriate servers to run within the datacenter, automatically select them for me, image them with whatever operating system or dependencies I need, and then install my application on them. And once that application is deployed on it, it will automatically wire up a network load balancer and start sending traffic to the application. And the beauty about cloud services is it's fully automated for me. I don't have to manually set up the machines. All that is handled for me by the core platform.
+	> **Speaking Point:** When I go ahead and hit publish, Visual Studio packages that up into what's called a service package file. It's going to be like a zip file, and uploads it into Windows Azure. And then what Windows Azure's going to do is it's going to find appropriate servers to run within the datacenter, automatically select them for me, image them with whatever operating system or dependencies I need, and then install my application on them. And once that application is deployed on it, it will automatically wire up a network load balancer and start sending traffic to the application. And the beauty about cloud services is it's fully automated for me. I don't have to manually set up the machines. All that is handled for me by the core platform.
 
 	![Visual Studio publish cloud service summary](Images/cloud-service-publish-summary.png?raw=true)
 
 	_Visual Studio publish cloud service summary_
 
-	> **Note:** In order to publish the service, you first need to change the database connection string to point to an Azure SQL Database (in both web.config and app.config files of the web and worker roles respectivelly) and also modify the _ApiBaseUrl_ in the app.config file to point to your Windows Azure Cloud Service address (_http://{your-cloud-service}.cloudapp.net_):
+	> **Note:** In order to publish the service, you first need to change the database connection string to point to an Azure SQL Database (in both web.config and app.config files of the web and worker roles respectively) and also modify the _ApiBaseUrl_ in the app.config file to point to your Windows Azure Cloud Service address (_http://{your-cloud-service}.cloudapp.net_):
 
 
 <a name="segment4" />
@@ -1373,19 +1385,19 @@ In this segment, you will monitor and manage the Windows Azure Cloud Services th
 
 1. Open the previously deployed **BuildClips** cloud service.
 
-	>**Speaking Point:** Let's go back to the BuildClips cloud service. Every cloud project in Azure has this nice dashboard view where we can see the overall health of the application. We can actually see individual machines, CPU, network and memory access, as well as the aggregate view of it as well. It displays separate information for both front-end and back-end roles.
+	>**Speaking Point:** Let's go back to the BuildClips cloud service. Every cloud project in Azure has this nice dashboard view where we can see the overall health of the application. We can actually see individual machines, CPU, network and memory access, as well as the aggregate view of it. It displays separate information for both front-end and back-end roles.
 
 	![Windows Azure Dashboard ](Images/windows-azure-dashboard.png?raw=true "Windows Azure Dashboard ")
 
 	_Windows Azure dashboard_
 
-1. Show that you have Production and Staging enviroments and how you can swap between them.
+1. Show that you have Production and Staging environments and how you can swap between them.
 
 	>**Speaking Point:** We are having deployments in Production and in Staging. The Swap Deployment operation initiates a virtual IP swap between staging and production deployment environments for a service. If the service is currently running in the staging environment, it will be swapped to the production environment. If it is running in the production environment, it will be swapped to staging.
 
 	![portal swap environments ](Images/portal-swap-environments.png?raw=true)
 
-	_Swapping enviroments using the portal_
+	_Swapping environments using the portal_
 
 1. On the **Scale** page, show how you can scale up the number of web and worker role instances independently.
 
@@ -1407,7 +1419,7 @@ In this segment, you will monitor and manage the Windows Azure Cloud Services th
 
 	_Windows Azure portal metrics_
 
-1. Navigate to the **Windows Azure Store** menu by clicking on **New** | **Store**. Scroll over all the avaiable add-ons to show the multiple options that users have for extending their apps.
+1. Navigate to the **Windows Azure Store** menu by clicking on **New** | **Store**. Scroll over all the available add-ons to show the multiple options that users have for extending their apps.
 
 	>**Speaking Point:** The management portal makes it incredibly easy in the same way that we could create a new website, create a new virtual machine or mobile service, we can just go inside the portal and say new - store, and this will go ahead and bring up a list of services provided from Microsoft partners.
 
@@ -1415,7 +1427,7 @@ In this segment, you will monitor and manage the Windows Azure Cloud Services th
 
 1. Select **New Relic** from the list.
 
-	>**Speaking Point:** We will just try out the **New Relic** add-on as an example. It provides additional rich monitoring and outside-in monitoring support that we can take advantage now easily within Windows Azure.
+	>**Speaking Point:** We will just try out the **New Relic** add-on as an example. It provides additional rich monitoring and outside-in monitoring support that we can take advantage of now easily within Windows Azure.
 
 	![Adding New Relic Add-On](Images/adding-new-relic-add-on.png?raw=true "Adding New Relic Add-On")
 
@@ -1435,7 +1447,7 @@ In this segment, you will monitor and manage the Windows Azure Cloud Services th
 
 1. Navigate to the **Add-ons** section of the **Windows Azure Management portal** and select your previously created **New Relic** service. Show the dashboard options that the service offers.
 
-	>**Speaking Point:** This is the service dashboard. We can see at a high-level what's going on with the service. We can get the connection info, so if we need for example, the developer key in order to setup New Relic in our application and allow it log data and send it to New Relic, we can do that. We can also upgrade it to the professional account later, if we want to.
+	>**Speaking Point:** This is the service dashboard. We can see at a high level what's going on with the service. We can get the connection info, so if we need for example, the developer key in order to set up New Relic in our application and allow it to log data and send it to New Relic, we can do that. We can also upgrade it to the professional account later, if we want to.
 
 	![New Relic Azure Dashboard](Images/new-relic-azure-dashboard.png?raw=true "New Relic Azure Dashboard")
 
@@ -1451,7 +1463,7 @@ In this segment, you will monitor and manage the Windows Azure Cloud Services th
 
 1. Click on the **buildclips** application to drill into the service.
 
-	>**Speaking Point:** We can see how our app server is doing from a health perspective. Once we drill-down into an application, we can observe a quick overview of our application server including server processing time, our KPI scores as well as system throughputs.
+	>**Speaking Point:** We can see how our app server is doing from a health perspective. Once we drill down into an application, we can observe a quick overview of our application server including server processing time, our KPI scores as well as system throughputs.
 
 	![Service Overview](Images/newrelic-n1.png?raw=true "Application Overview")
 
@@ -1463,7 +1475,7 @@ In this segment, you will monitor and manage the Windows Azure Cloud Services th
 
 	>**Speaking Point:** They have some pretty cool features that allow us to see how browsers are doing, so we can actually see a browser view of responsiveness of the app in real time as well as how it's performing from various geographic locations around the country and around the world.
 
-	>Two most important response times in performance tuning are shown in the upper-left corner - client perceived response time and server processing time. Client perceived response time is important because that's what our customers care about. Server processing time is useful when you try to fine tune performances of specific server APIs.
+	>Two most important response times in performance tuning are shown in the upper-left corner - client perceived response time and server processing time. Client perceived response time is important because that's what our customers care about. Server processing time is useful when you try to fine-tune performances of specific server APIs.
 
 	![Browser view](Images/newrelic-n2.png?raw=true "Browser view")
 

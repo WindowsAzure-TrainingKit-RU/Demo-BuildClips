@@ -9,13 +9,13 @@ In this segment, we will extend the web site to include Web APIs that power a Wi
 	>
 	> I've got my app right here. Let's go and launch this app
 	>
-	> **Note:** Make sure the port where the application will run is the 81, otherwise you will get an error when using Facebook login service.
+	> **Note:** Make sure the port where the application will run is number 81, otherwise you will get an error when using Facebook login service.
 	>
 	>To check this, open Web project's properties and verify that **Use Local IIS Web Server** is selected and it has this value: _http://127.0.0.1:81/_
 
 1. Log in to the application using Facebook. Provide your credentials.
 
-	> **Speaking Point**: You can see at the top there not only do I have the ability to log in via regular ASP.NET membership, but I've got a number of additional social identity providers like a Microsoft account, Twitter or Facebook. 
+	> **Speaking Point**: You can see at the top that not only do I have the ability to log in via regular ASP.NET membership, but I've got a number of additional social identity providers like a Microsoft account, Twitter or Facebook. 
 	>
 	> I'm going to log in via Facebook, and this is all built into the ASP.NET 4.5 API.
 
@@ -45,7 +45,7 @@ In this segment, we will extend the web site to include Web APIs that power a Wi
 
 1.	Talk about Facebook Authentication with DotNetOpenAuth. Open **App_Start/AuthConfig.cs**
 
-	> **Speaking Point**: We can now easily use DotNetOpenAuth for handling authentication with a variety of identity providers. In this application we are using Facebook for authentication. You can see how easy it is to setup Facebook authenticaiton in just a few lines of code. Similarly you could setup Google, Microsoft, and Twitter authentication.
+	> **Speaking Point**: We can now easily use DotNetOpenAuth for handling authentication with a variety of identity providers. In this application we are using Facebook for authentication. You can see how easy it is to set up Facebook authenticaiton in just a few lines of code. Similarly you could set up Google, Microsoft, and Twitter authentication.
 	>
 	> In addition to supporting Facebook authentication, we also have added a Facebook Application template in the ASP.NET Updates that makes it easy to build a Facebook App using the Facebook C# SDK.
 
@@ -55,9 +55,9 @@ In this segment, we will extend the web site to include Web APIs that power a Wi
 
 	> **Speaking Point**: After I log in, I can upload a video and the metadata for the video is stored in a SQL database. For that metadata we're using Entity Framework 6 Code First, and I'm going to take a look at the video context here.
 	>
-	> Note that with Code First the database and the schema are automatically generated. Additionally, using automatic migrations make it easy to iterate your data access code and database schema.
+	> Note that with Code First the database and the schema are automatically generated. Additionally, using automatic migrations makes it easy to iterate your data access code and database schema.
 	>
-	> We are using async and await to store this. This is really important because I know this application is going to be really popular. I'm going to make sure that I do all of my database IO in a non-blocking way. I make my new video, I add it and then I use async in a way to save those changes asynchronously. That releases that ASP.NET thread and back into the pool and then lets that IO happens in a non-blocking way.
+	> We are using async and await to store this. This is really important because I know this application is going to be really popular. I'm going to make sure that I do all of my database IO in a non-blocking way. I make my new video, I add it, and then I use async in a way to save those changes asynchronously. That releases the ASP.NET thread back into the pool and then lets that IO happen in a non-blocking way.
 
 1.	Discuss how we use Blob Storage to store the videos. Under the **BuildClips.Services** Project, open **VideoStorage.cs**. Show how easy it is to upload data to the blob. Show the Upload method and discuss how blob storage is scalable.
 
@@ -77,7 +77,7 @@ In this segment, we will extend the web site to include Web APIs that power a Wi
 
 	> **Speaking Point**: Now, I want to be able to access these videos from an API, from a Web API. I'm going to take those videos and expose them out to a Windows 8 application. This is an existing ASP.NET app, but I can still add a Web API to it. I can use Web API inside of Web forms or MVC, it's all one ASP.NET.
 	>
-	> In this example I've got a get and a post, and you'll notice on this post that I'm not taking the video as a parameter, I'm not using model binding in this instance because I could be uploading potentially many gigabytes of videos. I want to read that in using an asynchronous model as well. I can bring in many, many gigabytes of video without tying up that thread, again, allowing me to scale.
+	> In this example I've got a get and a post, and you'll notice on this post that I'm not taking the video as a parameter, I'm not using model binding in this instance because I could be uploading potentially many gigabytes of videos. I want to use an asynchronous model here as well. I can bring in many, many gigabytes of video without tying up that thread, again, allowing me to scale.
 
 1. Implement **Get** method for retrieving all the existing videos. Code snippet shortcut is **VideosControllercsGet**.
 
@@ -103,7 +103,8 @@ In this segment, we will extend the web site to include Web APIs that power a Wi
 	{
 		return this.service.GetAll();
 	}
-	```` 
+	````
+
 	> **Speaking Point**: But I might want to be able to query them a little bit more from the query string. Simply returning IQueryable and adding the [Queryable] attribute is all you need to enable OData queries on your REST service.
 
 1. Expand the **Areas** folder and show the **HelpPage** area. This area contains the Views to render the Web API Help Pages.
@@ -170,9 +171,15 @@ In this segment, we will extend the web site to include Web APIs that power a Wi
 
 	_Publishing the web site_
 
-1. In the **Settings** page, click **Next**.
+1. In the **Connection** page, click **Next**.
 
 	![publish connection](Images/publish-connection.png?raw=true)
+	
+	_Configuring the publish method_
+
+1. In the **Settings** page, click **Next**.
+
+	![publish settings](Images/publish-settings.png?raw=true)
 	
 	_Configuring the database connection string for the web site_
 
@@ -186,7 +193,7 @@ In this segment, we will extend the web site to include Web APIs that power a Wi
 
 1.	Once the publishing process finishes, go to the **Scale** tab in the portal and change the **Web Site Mode** to _Shared_. Change the number of instances to 3.
 
-	> **Speaking Point**: Now that my application is deployed and because I know this is going to be popular I'm going to go over to scale. In scale here, I can go and select not just that I want a free website, even though I get ten free websites, but I could say shared and have multiple instances or reserved and have even four cores and three instances of that. So I've got a lot of flexibility in my elasticity in Azure.
+	> **Speaking Point**: Now that my application is deployed and because I know this is going to be popular I'm going to go over to scale. In scale here, I can go and select not just that I want a free website, even though I get ten free websites, but I could say shared and have multiple instances or reserved and have even four cores and three instances of that. So I've got a lot of flexibility in the way I can scale my website in Azure.
 
 	![portal sharedmode](Images/portal-sharedmode.png?raw=true)
 
@@ -204,6 +211,8 @@ In this segment, we will extend the web site to include Web APIs that power a Wi
 
 	![portal manage domains](Images/portal-managedomains.png?raw=true)
 
+	_Manage domains using the Windows Azure portal_
+
 1. Navigate to the recently deployed application and upload a video that will be now stored in the cloud. You can use any of the videos from the **[working dir]\Assets\videos** folder.
 
 	> **Speaking Point:** So now, let's upload a new video to my recently deployed application. 
@@ -216,7 +225,7 @@ In this segment, we will extend the web site to include Web APIs that power a Wi
 
 	> **Speaking Point:** So now I'm going to consume that from Windows 8. And since I've been doing a lot of work in JavaScript and curly braces lately, I wrote the entire application in JavaScript. So this is a native Win8 application in the store that is written in JavaScript.
 
-1.	Show the code for calling the Web API. In the **webapi.js** file, highlight **getVideos()** method. Additionally, in the **data.js** file, highlight the **GetVideosOnSuccess()** method
+1.	Show the code for calling the Web API. In the **webapi.js** file, highlight **getVideos()** method. Additionally, in the **data.js** file, highlight the **GetVideosOnSuccess()** method.
 	
 	<!-- mark:3-4 -->
 	````JavaScript
@@ -256,7 +265,7 @@ In this segment, we will extend the web site to include Web APIs that power a Wi
 	
 	_Log into the Windows 8 App using Facebook Service_
 
-1. If you chose to authenticate using Facebook and the _Application Consent_ page is shown, click **Allow**. In case you have chosen to authenticate using Twitter, and the _Authorize Application_ page is shown, click **Authorize App** to continue.
+1. If you chose to authenticate using Facebook and the _Application Consent_ page is shown, click **Allow**. If you have chosen to authenticate using Twitter, and the _Authorize Application_ page is shown, click **Authorize App** to continue.
 
 1. Click on the video to show that it is consuming the published Web API.
 

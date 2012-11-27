@@ -60,7 +60,7 @@ As you proceed with these manual configuration tasks, you will be required to up
 In the **source** folder, you will find several scripts that carry out different setup and cleanup tasks including:
  
 - **Setup.Local.cmd**: verifies dependencies, creates the working directory and copies the source files to this directory, updates the configuration of the solutions with the configured settings. You typically run this script once, before running the demo for the first time.
-- **Cleanup.Local.cmd**: deletes the working directory and local database and resets the storage emulator. This script will allow you to reset the environment to its original state, after you have finished the demo.
+- **Cleanup.Local.cmd**: deletes the working directory and local database and resets the storage emulator. This script will allow you to reset the environment to its original state after you have finished the demo.
 - **Reset.Local.cmd**: executes the cleanup script to reset the environment and runs a reduced setup that does not verify dependencies. This script prepares the environment for running the demo again.
 - **Setup.Deployment.cmd**: configures the solution used by segment #5. This script is used before deploying the solution to Windows Azure.
 
@@ -75,7 +75,7 @@ To create a service namespace:
 
 1. In the **CREATE A NAMESPACE** dialog box, enter the **NAMESPACE NAME**, select a **REGION**, and then click the check mark to confirm the action.
 
-	> **Note:** Make sure to select the same region for all the assets that you create in Windows Azure for this demo, typically, the one that is closest to you.
+	> **Note:** Make sure to select the same region for all the assets that you create in Windows Azure for this demo, typically the one closest to you.
 
 	![Creating a new Service Namespace](Images/service-bus-add-namespace.png?raw=true)
 
@@ -96,7 +96,7 @@ To create the storage accounts:
 
 1. Enter a unique subdomain for the **URL** of the storage account that you will use to store your media, select a **REGION/AFFINITY GROUP**, and then click the **CREATE STORAGE ACCOUNT** check mark.
 
-	> **Note:** Make sure to select the same region for all the assets that you create in Windows Azure for this demo, typically, the one that is closest to you.
+	> **Note:** Make sure to select the same region for all the assets that you create in Windows Azure for this demo, typically the one closest to you.
 
 	![Creating a new Service Namespace](Images/storage-account-create.png?raw=true)
 
@@ -121,7 +121,7 @@ To create a new Media Services account:
 
 1. Enter the **NAME** of the service, select a **REGION**, select the **STORAGE ACCOUNT** that you created previously to hold your media from the drop-down list, and then click the **CREATE MEDIA SERVICE** check mark.
 
-	> **Note:** Make sure to select the same region for all the assets that you create in Windows Azure for this demo, typically, the one that is closest to you.
+	> **Note:** Make sure to select the same region for all the assets that you create in Windows Azure for this demo, typically the one closest to you.
 
 	![Creating the Media Service](Images/create-media-service.png?raw=true)
 
@@ -142,11 +142,11 @@ To create a new cloud service:
 
 1. Enter a unique subdomain for the **URL** of the cloud service, select a **REGION**, and then click the **CREATE CLOUD SERVICE** check mark.
 
-	> **Note:** Make sure to select the same region for all the assets that you create in Windows Azure for this demo, typically, the one that is closest to you.
+	> **Note:** Make sure to select the same region for all the assets that you create in Windows Azure for this demo, typically the one closest to you.
 
 	![Creating the Cloud Service](Images/create-cloud-service.png?raw=true)
 
-> **Note:** A cloud service is necessary for one of the segments in this demo that shows how to publish to a cloud service from Visual Studio. The segment walks through the steps but does not proceed with the deployment. In addition, the final, optional, segment of this demo, [Deploying and Managing Windows Azure Apps](#segment5), also requires a cloud service where you deploy the demo's solution. You may use a single cloud service for both purposes. However, if you prefer to minimize the risk of accidentally overwriting the deployment while showing the first segment, you may want to create an additional cloud service for this other segment.
+> **Note:** A cloud service is necessary for one of the segments in this demo that shows how to publish to a cloud service from Visual Studio. The segment walks through the steps but does not proceed with the deployment. In addition, the final and optional segment of this demo, [Deploying and Managing Windows Azure Apps](#segment5), also requires a cloud service where you deploy the demo's solution. You may use a single cloud service for both purposes. However, if you prefer to minimize the risk of accidentally overwriting the deployment while showing the first segment, you may want to create an additional cloud service for this other segment.
 
 1. In the **appSettings** section of the **Config.local.xml** file, locate the **cloudService** subsection and replace the placeholder in the **apiBaseUrl** setting with the name of the newly created cloud service. 
 
@@ -155,7 +155,7 @@ To create a new cloud service:
 <a name="setup5" />
 **Creating a Windows Azure SQL Database (optional)**
 
-The deployment for the final, optional, segment of this demo, [Deploying and Managing Windows Azure Apps](#segment5), requires the creation of a SQL Database. You may skip this section if you do not intend to show this segment.
+The deployment for the final, optional segment of this demo, [Deploying and Managing Windows Azure Apps](#segment5), requires the creation of a SQL Database. You may skip this section if you do not intend to show this segment.
 
 To create the database:
 
@@ -192,7 +192,7 @@ The application used in this demo allows users to log in using one of several co
 
 	Note that you need to create at least two entries in each provider, one for running the application locally using [http://127.0.0.1:81]() as the return (or callback) URL and the other for the URL of the site when deployed to Windows Azure Web Sites (e.g. [http://{YOUR-SITE-NAME}.azurewebsites.net/]()). 
 
-	>**Important:** Make sure that the URL for the Windows Azure Web Sites scenario that you specify to the identity provider is available when you deploy the site during the demo, so choose a site name that is unlikely to be in use. Alternatively, you may create the site in advance to reserve its name and, during the demo, simply walk through the process without creating the site. 
+	>**Important:** Make sure that the URL for the Windows Azure Web Sites scenario that you specify to the identity provider is available when you deploy the site during the demo by choosing a site name that is unlikely to be in use. Alternatively, you may create the site in advance to reserve its name and, during the demo, simply walk through the process without creating the site. 
 	
 	In addition, an (optional) segment in this demo requires you to deploy the application as a cloud service. If you intend to complete this segment, you also need to configure a third entry for the cloud service's URL (e.g. [http://{YOUR-CLOUD-SERVICE-NAME}.cloudapp.net]()). Use the cloud service name that you created earlier, as described in [Creating a Cloud Service](#setup4).
 
@@ -214,7 +214,7 @@ Once you have completed the previous tasks and updated the **Config.local.xml** 
 <a name="setup9" />
 **Deploying the Application as a Cloud Service and Configuring New Relic (optional)**
 
-The following procedure sets up the deployment used for the final, optional, segment of this demo, [Deploying and Managing Windows Azure Apps](#segment5). It shows how to acquire the New Relic (free) add-on from the Windows Azure Store, configure it for the solution, and deploy the application to a cloud service.
+The following procedure sets up the deployment used for the final and optional segment of this demo, [Deploying and Managing Windows Azure Apps](#segment5). It shows how to acquire the New Relic (free) add-on from the Windows Azure Store, configure it for the solution, and deploy the application to a cloud service.
 
 1. In the **Windows Azure Management Portal**, click **New** and then **Store**.
 
@@ -280,10 +280,9 @@ The following procedure sets up the deployment used for the final, optional, seg
 </html>
 ````
 
-
 1. Now, right-click the **BuildClips.Azure** project in **Solution Explorer** and then select **Publish**.
 
-1. In the **Publish Windows Azure Application** wizard, if this the first time you publish an application to the Windows Azure subscription that you will use for this demo, choose **Import**, browse to the **Downloads** folder and select the publish settings file that you downloaded earlier from the Management Portal. 
+1. In the **Publish Windows Azure Application** wizard, if this is your first time publishing an application to the Windows Azure subscription to be used for this demo, choose **Import**, browse to the **Downloads** folder and select the publish settings file that you downloaded earlier from the Management Portal. 
 
 1. Now, choose the subscription and then click **Next**.
 

@@ -25,6 +25,7 @@
 
         // GET: /Account/Login
         [AllowAnonymous]
+        [OutputCache(NoStore = true, Duration = 0)]
         public ActionResult Login(string returnUrl)
         {
             this.ViewBag.ReturnUrl = returnUrl;

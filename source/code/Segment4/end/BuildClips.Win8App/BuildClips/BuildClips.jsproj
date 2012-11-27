@@ -59,7 +59,6 @@
     </AppxManifest>
     <Content Include="css\default.css" />
     <Content Include="css\themes\base\jquery.ui.slider.css" />
-    <Content Include="images\background-pattern.png" />
     <Content Include="images\buildClipsLogo-snapped.png" />
     <Content Include="images\buildClipsLogo.png" />
     <Content Include="images\comment-background.png" />

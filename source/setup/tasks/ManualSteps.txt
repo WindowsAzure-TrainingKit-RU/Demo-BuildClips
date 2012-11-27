@@ -12,19 +12,10 @@ If you already executed the demo:
 3. Select SQL Databases. In the Servers tab, remove the server created in Segment #1.
 4. Select Service Bus, and then select the namespace created for this demo. Remove all the topics in this namespace.
 5. Select Media Services and select the media service account used during the demo. In the Content tab:
-   a. Delete de media assets uploaded during the demo. 
+   a. Delete the media assets uploaded during the demo. 
    b. Select the video published in Segment #2, and unpublish it.
 6. Remove the Azure subscription entries from Visual Studio. To do this:
    a. Open the solution in \source\code\Segment3\end\BuildClips.Win8App.
    b. In Solution Explorer, right-click the BuildClips.Azure project and select Publish.
    c. Click the subscriptions combobox and select Manage. Then delete all subscriptions from the list.
    d. Close the solution.
-
-Before executing the demo:
-=========================
-1. Open Visual Studio as Administrator
-2. Open the solution in [workingdir]\BuildClips\BuildClips.Web
-3. Run the solution.
-4. Navigate to /Account/Register and register as a local user.
-5. From the home page, select Upload, and upload some sample videos from the [installdir]\setup\assets\videos directory.
-6. Close the browser.
