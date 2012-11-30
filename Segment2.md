@@ -91,7 +91,7 @@ And the beauty about Windows Azure Media Services is that it exposes a REST API 
 
 	> **Speaking Point:** So I'm going to add now a pre-cooked helper class that will provide some minor extensions to the Media Services SDK library, which are intended to help us on interfacing with our video service.
 
-1. Open **VideoService.cs** and scroll down to the **CreateVideoAsync** method. Replace the **TODO** comment, and the next four lines with the code below.
+1. Open **VideoService.cs** and scroll down to the **CreateVideoAsync** method. Replace the **TODO** comment and the next four lines with the code below.
 	
 	(Code Snippet - _VideoService.cs - Create_)
 	<!-- mark:1-13 -->
@@ -102,31 +102,42 @@ And the beauty about Windows Azure Media Services is that it exposes a REST API 
 									 CloudConfigurationManager.GetSetting("MediaServicesAccountKey"));
 
 	// Create the Media Services asset from the uploaded video
-	var asset = mediaContext.CreateAssetFromStream(name, dataStream);
+	var asset = mediaContext.CreateAssetFromStream(name, title, type, dataStream);
 
 	// Get the Media Services asset URL
 	var videoUrl = mediaContext.GetAssetVideoUrl(asset);
 
 	// Launch the smooth streaming encoding job and store its ID
-	var jobId = mediaContext.ConvertAssetToSmoothStreaming(asset);
+	var jobId = mediaContext.ConvertAssetToSmoothStreaming(asset, true);
 	````
 
 	> **Speaking Point:** There we go. And then I'm just going to update some of the code I showed you earlier so that instead of storing that media inside a storage account, we're instead going to pass it off to Media Services to both store and code and publish. And doing that is really easy. So what I'm going to do here is just replace these four lines of code. This code right here. And what all this code is doing is connecting to my Windows Azure Media Services account. It's going to create a new asset in Media Services from the stream that was uploaded, get back a URL for it, and then kick off an encoding job to convert it to smooth streaming. Just a couple lines of code I can do that.
 
 1. Place the cursor over the **CloudMediaContext** type and press **CTRL+.** to add the using statement. Do the same with **CloudConfigurationManager** on the next line.
 
-1. Next, in the **Publish** method, replace the **TODO** comment with the following code.
+1. Next, in the **Publish** method, replace the **TODO** comment and the next three lines of code with the following snippet.
 
 	> **Speaking Point:** 
 	> And then when I want to publish it so that people can stream it, I can just go ahead and call video services publisher, and this is then going to just call and publish that video on the job object that was encoded and get me back a URL that I can now pass off to my clients to play.
 
 	(Code Snippet - _VideoService.cs - Publish_)
-	<!-- mark:1-4 -->
+	<!-- mark:1-15 -->
 	````C#
     var mediaContext = new CloudMediaContext(
                                      CloudConfigurationManager.GetSetting("MediaServicesAccountName"),
                                      CloudConfigurationManager.GetSetting("MediaServicesAccountKey"));
-    video.EncodedVideoUrl = mediaContext.PublishJobAsset(video.JobId);
+
+    string encodedVideoUrl, thumbnailUrl;
+    if (mediaContext.PublishJobAsset(video.JobId, out encodedVideoUrl, out thumbnailUrl))
+    {
+        video.EncodedVideoUrl = encodedVideoUrl;
+        video.ThumbnailUrl = thumbnailUrl;
+        video.JobId = null;
+
+        this.context.SaveChanges();
+	}
+
+	return video;
 	````
 1. Finally, insert a new method named **GetActiveJobs** into the class.
 

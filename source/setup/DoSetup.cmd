@@ -10,13 +10,18 @@ echo ========= Setting PowerShell Execution Policy =========
 %powerShellDir%\powershell.exe -NonInteractive -Command "Set-ExecutionPolicy unrestricted"
 echo Setting Execution Policy Done!
 
-%powerShellDir%\powershell.exe -NonInteractive -command "& '%~dp0\setup.local.ps1'"
 
-CHOICE /M "Do you want to configure the deployment for segment 5?"
+REM Begin setup Local
+call %powerShellDir%\powershell.exe -Command "& '%~dp0\tasks\show-consent-message.ps1' -SetupLocal "; exit $LASTEXITCODE
+IF %ERRORLEVEL% == 1 GOTO exit
+cls
 
-IF errorlevel 2 goto exit
+call %powerShellDir%\powershell.exe -Command "& '%~dp0\tasks\show-config-xml-message.ps1' Config.Local.xml"; exit $LASTEXITCODE
+IF %ERRORLEVEL% == 1 GOTO exit
+cls
 
-%~dp0\..\Setup.Deployment.cmd
+%powerShellDir%\powershell.exe -NonInteractive -command "%~dp0\setup.local.ps1" ".\Config.Local.xml"
+REM End setup Local
 
 :exit
 

@@ -36,12 +36,9 @@ namespace BackgroundService
 
                 foreach (var video in activeJobs.ToList())
                 {
-                    if (video.JobStatus == JobStatus.Completed)
-                    {
-                        service.Publish(video.Id);
-                    }
-
-                    proxy.Invoke("VideoUpdated", video.Id, video.JobStatus);
+                    proxy.Invoke(
+                        "VideoUpdated", 
+                        (video.JobStatus == JobStatus.Completed) ? service.Publish(video.Id) : video);
                 }
             }
         }

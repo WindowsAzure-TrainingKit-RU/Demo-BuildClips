@@ -23,7 +23,7 @@ echo.
 
 cls
 
-call %powerShellDir%\powershell.exe -Command "&'.\setup\tasks\show-consent-message.ps1' -SetupDeployment "; exit $LASTEXITCODE
+call %powerShellDir%\powershell.exe -Command "&'.\setup\tasks\show-consent-message.ps1' -CleanupDeployment "; exit $LASTEXITCODE
 IF %ERRORLEVEL% == 1 GOTO exit
 cls
 
@@ -35,7 +35,7 @@ call %powerShellDir%\powershell.exe -Command "&'.\setup\tasks\show-config-xml-me
 IF %ERRORLEVEL% == 1 GOTO exit
 cls
 
-%powerShellDir%\powershell.exe -NonInteractive -command ".\setup\setup.deployment.ps1" ".\Config.Azure.xml" ".\Config.Local.xml"
+%powerShellDir%\powershell.exe -NonInteractive -command ".\setup\cleanup.deployment.ps1" ".\Config.Azure.xml" ".\Config.Local.xml"
 
 :exit
 

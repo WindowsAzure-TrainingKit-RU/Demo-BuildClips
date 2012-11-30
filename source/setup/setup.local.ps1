@@ -17,9 +17,11 @@ if($demoSettingsFile -eq $nul -or $demoSettingsFile -eq "")
 [string] $workingDir = $xmlDemoSettings.configuration.localPaths.workingDir
 [string] $solutionWorkingDir = $xmlDemoSettings.configuration.localPaths.solutionWorkingDir
 [string] $segment2SolutionWorkingDir = $xmlDemoSettings.configuration.localPaths.segment2SolutionWorkingDir
+[string] $endSolutionWorkingDir = $xmlDemoSettings.configuration.localPaths.endSolutionWorkingDir
 
 [string] $beginSolutionDir = Resolve-Path $xmlDemoSettings.configuration.localPaths.beginSolutionDir
 [string] $beginSolutionSegment2Dir = Resolve-Path $xmlDemoSettings.configuration.localPaths.beginSolutionSegment2Dir
+[string] $endSolutionDir = Resolve-Path $xmlDemoSettings.configuration.localPaths.endSolutionDir
 
 [string] $assetsDir = Resolve-Path $xmlDemoSettings.configuration.localPaths.assetsDir
 
@@ -66,7 +68,18 @@ if (!(Test-Path "$segment2SolutionWorkingDir"))
 	New-Item "$segment2SolutionWorkingDir" -type directory | Out-Null
 }
 Copy-Item "$beginSolutionSegment2Dir\*" "$segment2SolutionWorkingDir" -Recurse -Force
-write-host "Copying Begin solution to working directory done!"
+write-host "Copying Begin solution for Segment 2 to working done!"
+
+
+write-host
+write-host
+write-host "========= Copying Begin solution for Segment 5 to working directory... ========="
+if (!(Test-Path "$endSolutionWorkingDir"))
+{
+	New-Item "$endSolutionWorkingDir" -type directory | Out-Null
+}
+Copy-Item "$endSolutionDir\*" "$endSolutionWorkingDir" -Recurse -Force
+write-host "Copying Begin solution for Segment 5 to working done!"
 
 
 write-host
@@ -108,7 +121,6 @@ write-host "========= Update app config settings in Begin solution... ========="
 $appConfigAssetFile = Join-Path $workingDir $appConfigAsset
 [string] $mediaServicesAccountName = $configNode.mediaServicesAccountName
 [string] $mediaServicesAccountKey = $configNode.mediaServicesAccountKey
-[string] $storageAccountConnectionString = $configNode.storageAccountConnectionString
 # Begin updating web.config file
 [string] $file = Resolve-Path $appConfigAssetFile 
 $xml = New-Object xml
@@ -117,7 +129,6 @@ $xml.Load($file)
 
 $xml.SelectNodes("//appSettings/add[@key = 'MediaServicesAccountName']").setAttribute("value", $mediaServicesAccountName)
 $xml.SelectNodes("//appSettings/add[@key = 'MediaServicesAccountKey']").setAttribute("value", $mediaServicesAccountKey)
-$xml.SelectNodes("//appSettings/add[@key = 'MediaServicesStorageAccountConnectionString']").setAttribute("value", $storageAccountConnectionString)
 
 $xml.Save($file)
 # End updating web.config file
@@ -149,10 +160,14 @@ $MsBuildFile = Join-Path $env:windir "\Microsoft.NET\Framework\v4.0.30319\MsBuil
 & $MsBuildFile @($beginSolutionFile, "/p:Configuration=Debug")
 write-host "Compiling Begin Web Site Solution Done!"
 
+
 write-host
 write-host
 write-host "========= Configuring IIS Express Web Site... ========="
 [string] $appCmdFile = Join-Path ${env:ProgramFiles(x86)} "\IIS Express\appcmd.exe"
+# Delete All sites
+& $appCmdFile @("list", "site", "/xml") | & $appCmdFile @("delete", "site", "/in")
+
 [string] $webSolutionfolder = Join-Path $solutionWorkingDir "BuildClips.Web\BuildClips"
 # Add BuildClips site
 & $appCmdFile @("add", "site", "/name:BuildClips", "/bindings:http://127.0.0.1:81", "/physicalpath:""$webSolutionfolder""")
@@ -171,9 +186,18 @@ write-host "Running Local Web Site Done!"
 
 write-host
 write-host
-write-host "========= Uploading Sample Videos to Local Web Site... ========="
-.\tasks\uploadVideos $videosDir "http://127.0.0.1:81/api/videos"
-write-host "Uploading Sample Videos to Local Web Site Done!"
+write-host "========= Testing Local Web Site... ========="
+$isWebSiteRunning = .\tasks\testWebSite.ps1 "http://127.0.0.1:81"
+write-host "========= Testing Local Web Site Done! ========="
+
+if ($isWebSiteRunning)
+{
+    write-host
+    write-host
+    write-host "========= Uploading Sample Videos to Local Web Site... ========="
+    .\tasks\uploadVideos $videosDir "http://127.0.0.1:81/api/videos"
+    write-host "Uploading Sample Videos to Local Web Site Done!"
+}
 
 write-host
 write-host

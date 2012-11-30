@@ -46,7 +46,7 @@
         <div class="video-grid-item">
             <div class="mask">
             </div>
-            <a class="video-thumb" href="@Url.Action("Details", new { id=item.Id })" style="background:url(@(item.ThumbnailUrl ?? Url.Content("~/Content/images/nothumbnail.png"))) no-repeat top left;"></a>
+            <a id="video_@item.Id" class="video-thumb" href="@Url.Action("Details", new { id=item.Id })" style="background:url(@(item.ThumbnailUrl ?? Url.Content("~/Content/images/nothumbnail.png"))) no-repeat top left;"></a>
             <div class="video-information">
                 <span class="video-title">@Html.DisplayFor(modelItem => item.Title)</span>
             
@@ -68,6 +68,22 @@
 </script>
 
 @section Scripts {
+    <script src="@Url.Content("~/Scripts/jquery.signalR-1.0.0-alpha2.min.js")"></script>
+    <script src="@Url.Content("~/signalr/hubs")" type="text/javascript"></script>
+    <script>
+        $(function () {
+            var connection = $.hubConnection();
+            var hub = connection.createHubProxy("Notifier");
+            hub.on("onVideoUpdate", function (video) {
+                if (video.ThumbnailUrl) {
+                    $("#video_" + video.Id).css("background", "url(" + video.ThumbnailUrl + ") no-repeat top left");
+                }
+            });
+
+            connection.start();
+        });
+    </script>
+
     <script>
         $(function () {
             $(".tag").live('click', function () {

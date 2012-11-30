@@ -51,8 +51,8 @@
 
 @media screen and (-ms-view-state: snapped) {
     #live-preview {
-        height: 320px;
-        width: 320px;
+        height: 280px;
+        width: 280px;
     }
 
     .capturepage .content {

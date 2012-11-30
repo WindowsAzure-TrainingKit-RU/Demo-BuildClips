@@ -19,6 +19,8 @@ In this segment, you will improve the scalability and performance of your Window
 
 	!["Enabling profiling"](Images/enabling-profiling.png?raw=true "Enabling profiling")
 
+	_Enabling profiling_
+
 1. Switch to the Visual Studio 2012 instance that has the BuildClips web project already open and stop the solution.  
 
 	> **Speaking Point:** Let's enable Windows Azure Caching for our cloud service. 
@@ -29,6 +31,8 @@ In this segment, you will improve the scalability and performance of your Window
 
 	![Enabling caching in Web Role properties](Images/web-role-properties.png?raw=true "Enabling caching in Web Role properties")
 
+	_Enabling caching in Web Role properties_
+
 	> **Speaking point:** We can tell Windows Azure to use a percentage of the available memory in the web role. 
 	
 1. Press **CTRL** + **S** to save the changes and close the Properties window.
@@ -37,14 +41,17 @@ In this segment, you will improve the scalability and performance of your Window
 
 	> **Speaking point:** Now we need to reference the Windows Azure Caching assemblies so we can interact with the cache from our application.  To do this, we'll simply right-click our solution to pull up the Manage NuGet Packages dialog and install the Windows Azure Caching NuGet package into our projects.
 
+	![Manage nuget packages for solution](Images/manage-nuget-packages-for-solution.png?raw=true)
 
-	![manage nuget packages for solution](Images/manage-nuget-packages-for-solution.png?raw=true)
+	_Manage nuget packages for solution_
 
 1. In the **NuGet Package Manager**, expand the **Online** node and search for the **Windows Azure Caching** package.
 
 1. Select package, click **Install** and confirm to install the package **in the three projects**. Close the package manager.
 	
-	![install caching nuget](Images/install-caching-nuget.png?raw=true)
+	![Install caching nuget](Images/install-caching-nuget.png?raw=true)
+
+	_Install caching nuget_
 
 1. Open **Web.config** in the **BuildClips** project. Locate the `<dataCacheClients>` element and replace the `[cache cluster role name]` placeholder with **BuildClips**. 
 
@@ -126,7 +133,7 @@ In this segment, you will improve the scalability and performance of your Window
 	public void Publish(int id)
    {
 		...
-		context.SaveChanges();
+		this.context.SaveChanges();
 
 		var cache = new DataCache();
 		cache.Remove("videoList");
@@ -161,13 +168,17 @@ In this segment, you will improve the scalability and performance of your Window
 
 	> **Speaking point:** Let's refresh our list of videos. Since this is our first request following a cold start of the application, the measured time also includes the warm-up time for the cache, database connection initialization, and other factors that make it unsuitable for representing the cache miss scenario accurately, so we'll skip this first reading.
 
-	![](Images/refresh.png?raw=true "Refresh")
+	![Refreshing the video list](Images/refresh.png?raw=true "Refresh")
+
+	_Refreshing the video list_
 
 1. In the Windows 8 app, open the **charms bar** and select **Settings**. 
 
 1. Now, select the **Profiling** option and click **Clear Cache**.
 
-	![](Images/clear-cache.png?raw=true "Clear Cache")
+	![Clear cache](Images/clear-cache.png?raw=true "Clear Cache")
+
+	_Clear cache_
 
 	> **Speaking point:** Let's start from a known state by clearing the cache. This will remove all items from the cache.  
 
@@ -175,13 +186,17 @@ In this segment, you will improve the scalability and performance of your Window
 
 	> **Speaking point:** Let's refresh our list of videos. Since the cache is now empty, the service will need to go back to the database to retrieve the list of videos and then it will add them to the cache. Notice that it's taking a significant amount of time to do this. 
 
-	![](Images/response-time-slow.png?raw=true "Response time")
+	![Response time with cache miss](Images/response-time-slow.png?raw=true "Response time")
+
+	_Response time with cache miss_
 
 1. Refresh the list of videos again one or more times to show that caching response time has decreased.
 
 	> **Speaking point:** Now you can see that the response time has significantly improved. 
 
-	![](Images/response-time-fast.png?raw=true "Response time")
+	![Response time with cache hit](Images/response-time-fast.png?raw=true "Response time")
+
+	_Response time with cache hit_
 
 1. Clear the cache again to force a cache miss and repeat the sequence.
 

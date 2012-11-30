@@ -180,9 +180,7 @@
     }
 }
 
-
-/* Details Page
-    */
+/* Details Page */
 
 .itemdetailpage h4 {
     font-size: 25px;    
@@ -266,7 +264,7 @@ div.comments-container {
         }
 
         div.comments-container div.new-comment textarea {
-            height:80px;   
+            height:80px;
             clear: right; 
             width: calc(99% - 40px);
 			background-color: #dfe7e8;
@@ -299,9 +297,17 @@ span#videoFailedToLoadMsg.error {
     display:inline-block;
 }
 
-
-
 @media screen and (-ms-view-state: snapped) {
+	.fragment-details header[role=banner] .topbar {
+        background-position-x: 80px;
+		background-position-y: 22px;
+        -ms-grid-column: 2;
+    }
+	
+	.fragment-details header[role=banner] .user-box {
+		display: none;
+	}
+	
     div.video-player-container,
     div.video-details-comments-container {
         width: 320px;
@@ -326,4 +332,18 @@ span#videoFailedToLoadMsg.error {
         width: 100%;
         margin: 10px 0px;
     }
+	
+	div.comments-container div.new-comment textarea {
+        height:50px;
+    }
+	
+	div.comments-container div.new-comment #doComment {
+		padding: 10px;
+		font-size: 15px;
+	}
+	
+	.fragment-details header[role=banner] .win-backbutton {
+        margin-left: 20px;
+        margin-top: 22px;
+	}
 }

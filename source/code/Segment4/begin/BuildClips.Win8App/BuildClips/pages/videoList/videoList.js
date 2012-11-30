@@ -217,10 +217,10 @@
                     allVideosCount.textContent = (count + 8);
 
                     myVideosCountInSelect.textContent = myVideosCountInSelect.attributes.getNamedItem("data-caption").value;
-                    myVideosCountInSelect.textContent += count;
+                    myVideosCountInSelect.textContent += " (" + count + ")";
 
                     allVideosCountInSelect.textContent = allVideosCountInSelect.attributes.getNamedItem("data-caption").value;
-                    allVideosCountInSelect.textContent += (count + 8);
+                    allVideosCountInSelect.textContent += " (" + (count + 8) + ")";
 
                     videoCounters.style.display = "block";
                 });

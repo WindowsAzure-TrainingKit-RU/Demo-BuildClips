@@ -1,96 +1,144 @@
 ﻿namespace BuildClips.Services
 {
+    using Microsoft.WindowsAzure.MediaServices.Client;
     using System;
     using System.IO;
     using System.Linq;
     using System.Net;
     using System.Threading;
 
-    using Microsoft.Win32;
-    using Microsoft.WindowsAzure;
-    using Microsoft.WindowsAzure.MediaServices.Client;
-    using Microsoft.WindowsAzure.StorageClient;
-
     public static class MediaServicesHelper
     {
-        private const string VideoFileTitlePrefix = "Video";
-        private const string Mp4ContentType = "video/mp4";
-        private const string Mp4FileExtension = "mp4";
-        private const string ManifestFileExtension = "ism";
+        private const string ManifestFileExtension = ".ism";
         private const string H264SmoothStreamingEncodingPreset = "H264 Smooth Streaming SD 16x9";
         private const string EncoderProcessorId = "nb:mpid:UUID:70bdc2c3-ebf4-42a9-8542-5afc1e55d217";
         private const int CheckFirstManifestAvailabilityWaitTime = 45;
         private const int CheckManifestAvailabilityWaitTime = 10;
+        private const string EncodingTask = "MP4->SS Task";
+        private const string ThumbnailTask = "Thumbnail";
+        private const string ThumbnailPreset = @"<?xml version=""1.0"" encoding=""utf-16""?><Thumbnail Size=""350,200"" Type=""Png"" Filename=""{OriginalFilename}_{ThumbnailTime}.{DefaultExtension}""><Time Value=""0:0:1""/></Thumbnail>";
 
-        public static IAsset CreateAssetFromStream(this CloudMediaContext context, string name, Stream stream)
+        public static IAsset CreateAssetFromStream(this CloudMediaContext context, string fileName, string title, string contentType, Stream stream)
         {
-            var temporalDirectoryPath = Path.GetTempPath();
+            var temporalDirectoryPath = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName(), Thread.CurrentThread.ManagedThreadId.ToString());
+            var videoFilePath = Path.Combine(temporalDirectoryPath, fileName);
 
-            var videoFileName = string.Format(
-                "{0}_{1}{2}", MediaServicesHelper.VideoFileTitlePrefix, Guid.NewGuid(), Path.GetExtension(name));
-            var videoFilePath = Path.Combine(temporalDirectoryPath, videoFileName);
-
-            using (var fileStream = File.Create(videoFilePath))
+            try
             {
-                stream.CopyTo(fileStream);
+                Directory.CreateDirectory(temporalDirectoryPath);
+
+                using (var fileStream = File.Create(videoFilePath))
+                {
+                    stream.CopyTo(fileStream);
+                }
+
+                var asset = context.Assets.Create(title, AssetCreationOptions.None);
+                asset.AlternateId = fileName;
+                asset.Update();
+
+                var assetFile = asset.AssetFiles.Create(fileName);
+                assetFile.Upload(videoFilePath);
+                assetFile.IsPrimary = true;
+                assetFile.MimeType = contentType;
+                assetFile.Update();                
+
+                return asset;
             }
-
-            var asset = context.Assets.Create(name, AssetCreationOptions.None);
-
-            asset.AlternateId = videoFileName;
-
-            var assetFile = asset.AssetFiles.Create(videoFileName);
-            assetFile.Upload(videoFilePath);
-
-            File.Delete(videoFilePath);
-
-            return asset;
+            finally
+            {
+                File.Delete(videoFilePath);
+                Directory.Delete(temporalDirectoryPath);
+            }
         }
 
-        public static string ConvertAssetToSmoothStreaming(this CloudMediaContext context, IAsset asset)
+        public static string ConvertAssetToSmoothStreaming(this CloudMediaContext context, IAsset asset, bool createThumbnail)
         {
-            var processor = context.MediaProcessors.Where(m => m.Id == MediaServicesHelper.EncoderProcessorId).FirstOrDefault();
+            var configuration = MediaServicesHelper.H264SmoothStreamingEncodingPreset;
+            var processor = context.MediaProcessors.Where(m => m.Id == MediaServicesHelper.EncoderProcessorId).FirstOrDefault();            
 
             var job = context.Jobs.Create(asset.Name);
 
             var task = job.Tasks.AddNew(
-                "MP4->SS Task",
+                MediaServicesHelper.EncodingTask,
                 processor,
-                MediaServicesHelper.H264SmoothStreamingEncodingPreset,
+                configuration,
                 TaskOptions.None);
 
             task.InputAssets.Add(asset);
-            task.OutputAssets.AddNew(asset.Name + "_encoded", true, AssetCreationOptions.None);
+            var encodedAsset = task.OutputAssets.AddNew(asset.Name + " - [" + configuration + "]", true, AssetCreationOptions.None);
+            encodedAsset.AlternateId = asset.AlternateId + "_0";
 
+            if (createThumbnail)
+            {
+                var thumbnailTask = job.Tasks.AddNew(
+                    MediaServicesHelper.ThumbnailTask,
+                    processor,
+                    MediaServicesHelper.ThumbnailPreset,
+                    TaskOptions.None);
+
+                thumbnailTask.InputAssets.Add(asset);
+                var thumbnailAsset = thumbnailTask.OutputAssets.AddNew(asset.Name + " - [thumbnail]", true, AssetCreationOptions.None);
+                thumbnailAsset.AlternateId = asset.AlternateId + "_1";
+            }
+            
             job.Submit();
 
             return job.Id;
         }
 
-        public static string PublishJobAsset(this CloudMediaContext context, string jobId)
+        public static bool PublishJobAsset(this CloudMediaContext context, string jobId, out string encodedVideoUrl, out string thumbnailUrl)
         {
+            encodedVideoUrl = null;
+            thumbnailUrl = null;
             var job = context.Jobs.Where(j => j.Id == jobId).FirstOrDefault();
-            var asset = job.OutputMediaAssets[0];
+            if ((job == null) || !(job.State == JobState.Finished || job.State == JobState.Canceled || job.State == JobState.Error))
+            {
+                return false;
+            }
+            
+            var encodingTask = job.Tasks.Where(t => t.Name == MediaServicesHelper.EncodingTask).FirstOrDefault();
+            if (encodingTask != null)
+            {
+                var encodedAsset = encodingTask.OutputAssets.FirstOrDefault();
+                if (encodedAsset != null)
+                {
+                    var manifestFile =
+                        encodedAsset.AssetFiles.Where(f => f.Name.EndsWith(MediaServicesHelper.ManifestFileExtension)).FirstOrDefault();
+                    if (manifestFile == null)
+                    {
+                        return false;
+                    }
 
-            // Since the ODATA Linq provider doesn't support the First method, the files are first filtered using Where
-            // Then, the First result of the filtered list is selected
-            var manifestFile =
-                asset.AssetFiles.Where(f => f.Name.EndsWith(string.Concat(".", MediaServicesHelper.ManifestFileExtension))).First();
+                    var originLocator = context.CreateOriginLocator(encodedAsset);
+                    encodedVideoUrl = originLocator.GetFileUrl(manifestFile);
+                }
+            }
 
-            var originLocator = context.CreateOriginLocator(asset);
-
-            var encodedVideoUrl = originLocator.GetFileUrl(manifestFile);
+            var thumbnailTask = job.Tasks.Where(t => t.Name == MediaServicesHelper.ThumbnailTask).FirstOrDefault();
+            if (thumbnailTask != null)
+            {
+                var thumbnailAsset = thumbnailTask.OutputAssets.FirstOrDefault();
+                if (thumbnailAsset != null)
+                {
+                    var thumbnailFile = thumbnailAsset.AssetFiles.FirstOrDefault();
+                    if (thumbnailFile != null)
+                    {
+                        var sasLocator = context.CreateSasLocator(thumbnailAsset, AccessPermissions.Read, TimeSpan.FromDays(30.0));
+                        thumbnailUrl = sasLocator.GetFileUrl(thumbnailFile.Name);
+                    }
+                }
+            }
 
             BlockUntilFileIsAvailable(encodedVideoUrl);
 
-            return encodedVideoUrl;
+            job.Delete();
+
+            return true;
         }
 
         public static string GetAssetVideoUrl(this CloudMediaContext context, IAsset asset)
         {
             var locator = context.CreateSasLocator(asset, AccessPermissions.Read, TimeSpan.FromDays(30));
-
-            context.ChangeContentTypeForFiles(asset);
 
             return locator.GetFileUrl(asset.AlternateId);
         }
@@ -103,13 +151,23 @@
         private static ILocator CreateOriginLocator(this CloudMediaContext context, IAsset asset)
         {
             var streamingPolicy = context.AccessPolicies.Create(
-                "Streaming policy", TimeSpan.FromDays(1), AccessPermissions.Read);
-
+                "Streaming policy", TimeSpan.FromDays(30), AccessPermissions.Read);
+            
             return context.Locators.CreateLocator(
                 LocatorType.OnDemandOrigin,
                 asset, streamingPolicy, DateTime.UtcNow.AddMinutes(-5));
         }
 
+        public static ILocator CreateSasLocator(this CloudMediaContext context, IAsset asset, AccessPermissions permissions, TimeSpan duration)
+        {
+            var accessPolicy = context.AccessPolicies.Create(
+                "Sas policy", duration, permissions);
+
+            return context.Locators.CreateLocator(
+                LocatorType.Sas,
+                asset, accessPolicy, DateTime.UtcNow.AddMinutes(-5));
+        }
+        
         private static string GetFileUrl(this ILocator locator, IAssetFile file)
         {
             return locator.GetFileUrl(file.Name);
@@ -117,52 +175,18 @@
 
         private static string GetFileUrl(this ILocator locator, string fileName)
         {
-            var url = string.Empty;
-
             if (locator.Type == LocatorType.Sas)
             {
-                url = locator.GetSasFileUrl(fileName);
+                return string.Concat(locator.BaseUri, locator.BaseUri.EndsWith("/") ? string.Empty : "/", Uri.EscapeDataString(fileName), locator.ContentAccessComponent);
             }
             else if (locator.Type == LocatorType.OnDemandOrigin)
             {
-                url = locator.GetOriginFileUrl(fileName);
+                return string.Concat(locator.Path, locator.Path.EndsWith("/") ? string.Empty : "/", Uri.EscapeDataString(fileName), "/Manifest");
             }
 
-            return url;
+            return string.Empty;
         }
 
-        private static string GetOriginFileUrl(this ILocator locator, string fileName)
-        {
-            return locator.Path + fileName + "/manifest";
-        }
-
-        private static string GetSasFileUrl(this ILocator locator, string fileName)
-        {
-            string url;
-
-            var queryPos = locator.Path.IndexOf('?');
-            if (queryPos < 0)
-            {
-                var addSlash = locator.Path.EndsWith("/") ? string.Empty : "/";
-                url = string.Concat(locator.Path, addSlash, fileName);
-            }
-            else
-            {
-                var slashPos = locator.Path.IndexOf("/?", StringComparison.InvariantCultureIgnoreCase);
-                var slash = slashPos + 1 == queryPos ? string.Empty : "/";
-                url = locator.Path.Replace("?", string.Concat(slash, fileName, "?"));
-            }
-
-            return url;
-        }
-
-        public static ILocator CreateSasLocator(this CloudMediaContext context, IAsset asset, AccessPermissions permissions, TimeSpan duration)
-        {
-            var accessPolicy = context.AccessPolicies.Create("Sas policy", duration, permissions);
-
-            return context.Locators.CreateSasLocator(asset, accessPolicy, DateTime.UtcNow.AddMinutes(-5));
-        }
-        
         private static void BlockUntilFileIsAvailable(string fileUrl)
         {
             var uri = new Uri(fileUrl, UriKind.Absolute);
@@ -198,52 +222,6 @@
             {
                 throw new Exception(string.Format("The file {0} is unavailable", fileUrl));
             }
-        }
-
-        // This is a workaround for a bug in the Media Services Preview where the Content-Type is not set correctly 
-        // on the blob during ingest from the SDK. This results in the Content-Type being returned from the SAS URL as 
-        // application/octet-stream.
-        // The method assumes that at least one locator has already been created previously, which it uses to obtain the 
-        // asset container name. 
-        // Note that the call to this method can be removed once the bug is fixed.
-        private static void ChangeContentTypeForFiles(this CloudMediaContext context, IAsset asset)
-        {
-            var locator = asset.Locators.FirstOrDefault();
-            if (locator != null)
-            {
-                var connectionString = CloudConfigurationManager.GetSetting("MediaServicesStorageAccountConnectionString");
-                var account = CloudStorageAccount.Parse(connectionString);
-                var client = account.CreateCloudBlobClient();
-
-                var containerUrl = new Uri(locator.Path).GetLeftPart(UriPartial.Path);
-                foreach (var assetFile in asset.AssetFiles)
-                {
-                    var fileExtension = Path.GetExtension(assetFile.Name);
-                    string contentType = MediaServicesHelper.MapExtensionToContentType(fileExtension);
-                    if (contentType != null)
-                    {
-                        var blobPath = containerUrl + "/" + assetFile.Name;
-                        var blob = client.GetBlobReference(blobPath);
-                        blob.Properties.ContentType = contentType;
-                        blob.SetProperties();
-                    }
-                }
-            }
-        }
-
-        private static string MapExtensionToContentType(string extension)
-        {
-            var registryKey = Registry.ClassesRoot.OpenSubKey(extension.ToLower());
-            if (registryKey != null)
-            {
-                var contentType = registryKey.GetValue("Content Type");
-                if (contentType != null)
-                {
-                    return contentType.ToString();
-                }
-            }
-
-            return null;
         }
     }
 }

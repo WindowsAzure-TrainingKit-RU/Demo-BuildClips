@@ -52,20 +52,21 @@
             return video;
         }
 
-        public void Publish(int id)
+        public Video Publish(int id)
         {
             var video = this.context.Videos.FirstOrDefault(v => v.Id == id);
 
             if (video == null)
             {
-                return;
+                return null;
             }
-            
-            //// TODO:  Publish video in Media Services - BuildVideoServicecsPublish
 
+            //// TODO:  Publish video in Media Services - BuildVideoServicecsPublish
             video.JobId = null;
 
             this.context.SaveChanges();
+
+            return video;
         }
 
         public async Task DeleteVideoAsync(int id)

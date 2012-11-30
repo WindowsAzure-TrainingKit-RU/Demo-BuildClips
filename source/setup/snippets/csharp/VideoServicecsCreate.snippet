@@ -16,13 +16,13 @@ var mediaContext = new CloudMediaContext(
                                  CloudConfigurationManager.GetSetting("MediaServicesAccountKey"));
 
 // Create the Media Services asset from the uploaded video
-var asset = mediaContext.CreateAssetFromStream(name, dataStream);
+var asset = mediaContext.CreateAssetFromStream(name, title, type, dataStream);
 
 // Get the Media Services asset URL
 var videoUrl = mediaContext.GetAssetVideoUrl(asset);
 
 // Launch the smooth streaming encoding job and store its ID
-var jobId = mediaContext.ConvertAssetToSmoothStreaming(asset);]]>
+var jobId = mediaContext.ConvertAssetToSmoothStreaming(asset, true);]]>
       </Code>
     </Snippet>
   </CodeSnippet>

@@ -20,8 +20,13 @@ echo ========= Setting PowerShell Execution Policy =========
 %powerShellDir%\powershell.exe -NonInteractive -Command "Set-ExecutionPolicy unrestricted"
 echo Setting Execution Policy Done!
 echo.
+cls
 
-call %powerShellDir%\powershell.exe -Command "&'.\Setup\tasks\show-consent-message.ps1' -ResetLocal"; exit $LASTEXITCODE
+call %powerShellDir%\powershell.exe -Command "&'.\Setup\tasks\show-consent-message.ps1' -CleanupAzure -CleanupLocal"; exit $LASTEXITCODE
+IF %ERRORLEVEL% == 1 GOTO exit
+cls
+
+call %powerShellDir%\powershell.exe -Command "&'.\Setup\tasks\show-config-xml-message.ps1' Config.Azure.xml"; exit $LASTEXITCODE
 IF %ERRORLEVEL% == 1 GOTO exit
 cls
 
@@ -29,14 +34,13 @@ call %powerShellDir%\powershell.exe -Command "&'.\Setup\tasks\show-config-xml-me
 IF %ERRORLEVEL% == 1 GOTO exit
 cls
 
-cls
+REM cleanup Azure
+%powerShellDir%\powershell.exe -NonInteractive -command ".\setup\cleanup.azure.ps1" ".\Config.Azure.xml" 
 
-REM call %powerShellDir%\powershell.exe -Command "&'.\setup\tasks\install-demotoolkit.ps1' "; exit $LASTEXITCODE
 
-IF %ERRORLEVEL% == 1 GOTO exit
-
+REM cleanup Local
 %powerShellDir%\powershell.exe -NonInteractive -command ".\setup\cleanup.local.ps1" ".\Config.Local.xml" 
-%powerShellDir%\powershell.exe -NonInteractive -command ".\setup\setup.local.ps1" ".\Config.Local.xml"
+
 
 :exit
 

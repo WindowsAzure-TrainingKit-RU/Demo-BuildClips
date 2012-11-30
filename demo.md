@@ -39,30 +39,37 @@ In order to execute this demo, you first need to set up your environment by comp
 
 1. [Creating a Service Bus Namespace for the SignalR Backplane](#setup1)
 
-1. [Creating Storage Accounts for Media and Diagnostics](#setup2)
+1. [Creating Storage Account for Media](#setup2)
 
 1. [Creating a Media Services Account](#setup3)
 
-1. [Creating a Cloud Service](#setup4)
+1. [Downloading the Publish Settings File for the Subscription](#setup4)
 
-1. [Creating a Windows Azure SQL Database (optional)](#setup5)
+1. [Configuring the Windows Azure Web Site](#setup5)
 
-1. [Downloading the Publish Settings File for the Subscription](#setup6)
+1. [Configuring Identity Providers](#setup6)
 
-1. [Configuring Identity Providers](#setup7)
+1. [Running the Setup Scripts](#setup7)
 
-1. [Running the Setup Scripts](#setup8)
+1. [Deploying a Cloud Service and Configuring New Relic (optional)](#setup8)
 
-1. [Deploying a Cloud Service and Configuring New Relic (optional)](#setup9)
-
-As you proceed with these manual configuration tasks, you will be required to update information in a configuration file named **Config.local.xml** that you will find in the **source** folder of the demo. This file is used by the setup scripts to configure the demo and includes, among other settings, storage, database, and service bus connection strings, working directory, cloud service names, media services account credentials, and identity provider settings.
+As you proceed with these manual configuration tasks, you will be required to update information in two configuration files named **Config.Local.xml** and **Config.Azure.xml** that you will find in the **source** folder of the demo. These files are used by the setup scripts to configure the demo and includes, among other settings, storage, database, and service bus connection strings, working directory, cloud service names, media services account credentials, and identity provider settings.
 
 In the **source** folder, you will find several scripts that carry out different setup and cleanup tasks including:
  
-- **Setup.Local.cmd**: verifies dependencies, creates the working directory and copies the source files to this directory, updates the configuration of the solutions with the configured settings. You typically run this script once, before running the demo for the first time.
-- **Cleanup.Local.cmd**: deletes the working directory and local database and resets the storage emulator. This script will allow you to reset the environment to its original state after you have finished the demo.
-- **Reset.Local.cmd**: executes the cleanup script to reset the environment and runs a reduced setup that does not verify dependencies. This script prepares the environment for running the demo again.
-- **Setup.Deployment.cmd**: configures the solution used by segment #5. This script is used before deploying the solution to Windows Azure.
+- **Setup.cmd**: verifies dependencies, creates the working directory and copies the source files to this directory, and updates the configuration of the solutions with the configured settings. You typically run this script once, before running the demo for the first time.
+- **Cleanup.cmd**: this script allows you to clean up some of the resources used for this demo, including deleting the SQL database used by the Azure web site, removing the working directory and local database and resetting the storage emulator.
+
+	> **Note:** This script will not remove the following assets, which need to be removed manually:
+
+	> - Windows Azure Web Site
+	> - Windows Azure Media Services account
+	> - Storage account used by Media Services
+	> - Service Bus namespace
+
+- **Reset.cmd**: executes the cleanup script to reset the environment and runs a reduced setup that does not verify dependencies. This script prepares the environment for running the demo again.
+- **Setup.Deployment.cmd**: configures the solution used by segment #5, creates a Storage account for diagnostics, creates a cloud service, creates a new Azure SQL database and deploys the solution to Windows Azure.
+- **Cleanup.Deployment.cmd**: deletes the cloud service, the Storage account for diagnostics and the Azure SQL database created by **Setup.Deployment.cmd**.
 
 <a name="setup1" />
 **Creating a Service Bus Namespace for the SignalR Backplane**
@@ -79,16 +86,20 @@ To create a service namespace:
 
 	![Creating a new Service Namespace](Images/service-bus-add-namespace.png?raw=true)
 
+	_Creating a new Service Namespace_
+
 1. Select the newly created namespace, click **ACCESS KEY** in the command bar, and then copy the **CONNECTION STRING** setting to the clipboard.
 
 	![Service Bus Namespace Access Key](Images/access-key-servicebus-namespace.png?raw=true)
 
-1. Now, open the **Config.local.xml** file in the **source** folder, locate the **serviceBusConnectionString** setting in the **appSettings** section, and then paste the contents of the clipboard, replacing its current value. Alternatively, you may replace the individual placeholders for the namespace name and namespace key, which you can also obtain as a result of the previous step.
+	_Service Bus Namespace Access Key_
+
+1. Now, open the **Config.Local.xml** file in the **source** folder, locate the **serviceBusConnectionString** setting in the **appSettings** section, and then paste the contents of the clipboard, replacing its current value. Alternatively, you may replace the individual placeholders for the namespace name and namespace key, which you can also obtain as a result of the previous step.
 
 <a name="setup2" />
-**Creating Storage Accounts for Media and Diagnostics**
+**Creating Storage Account for Media**
 
-To create the storage accounts:
+To create the storage account:
 
 1. Go to the **Windows Azure Management Portal**.
 
@@ -98,17 +109,17 @@ To create the storage accounts:
 
 	> **Note:** Make sure to select the same region for all the assets that you create in Windows Azure for this demo, typically the one closest to you.
 
-	![Creating a new Service Namespace](Images/storage-account-create.png?raw=true)
+	![Creating a new Storage Account](Images/storage-account-create.png?raw=true)
+
+	_Creating a new Storage Account_
 
 1. Select the newly created storage account, click **MANAGE KEYS** in the command bar, and then copy the value of the **STORAGE ACCOUNT NAME** and **PRIMARY ACCESS KEY** settings.
 
-	![Media Service Access Key](Images/storage-account-access-keys.png?raw=true)
+	![Storage Account Access Keys](Images/storage-account-access-keys.png?raw=true)
 
-1. In the **appSettings** section of the **Config.local.xml** file, locate the **storageAccountConnectionString** setting and replace the placeholders for account name and account key with the corresponding values obtained in the previous step.
+	_Storage Account Access Keys_
 
-1. Repeat the previous procedure to create an additional storage account, this time to store diagnostics data.
-
-1. Once the account is created and you have obtained its account name and key, locate the **diagnosticsStorageAccountConnectionString** setting in the **appSettings** section of the **Config.local.xml** file and replace the corresponding placeholders.
+1. In the **appSettings** section of the **Config.Local.xml** file, locate the **storageAccountConnectionString** setting and replace the placeholders for account name and account key with the corresponding values obtained in the previous step.
 
 <a name="setup3" />
 **Creating a Media Services Account**
@@ -125,60 +136,34 @@ To create a new Media Services account:
 
 	![Creating the Media Service](Images/create-media-service.png?raw=true)
 
+	_Creating the Media Services account_
+
 1. Select the newly created service, click **MANAGE KEYS** in the command bar, and then copy the value of the **MEDIA SERVICE ACCOUNT NAME** and **PRIMARY MEDIA SERVICE ACCESS KEY** settings.
 
-	![Media Service Access Key](Images/media-service-access-keys.png?raw=true)
+	![Media Service Access Keys](Images/media-service-access-keys.png?raw=true)
 
-1. In the **appSettings** section of the **Config.local.xml** file, locate the **mediaServicesAccountName** and **mediaServicesAccountKey** settings and replace the placeholders with the corresponding values obtained in the previous step.
+	_Media Service Access Keys_
+
+1. In the **appSettings** section of the **Config.Local.xml** file, locate the **mediaServicesAccountName** and **mediaServicesAccountKey** settings and replace the placeholders with the corresponding values obtained in the previous step.
 
 <a name="setup4" />
-**Creating a Cloud Service**
-
-To create a new cloud service:
-	
-1. Go to the **Windows Azure Management Portal**.
-
-1. In the navigation pane, select **CLOUD SERVICES**, click **NEW** in the command bar, and then **QUICK CREATE**.
-
-1. Enter a unique subdomain for the **URL** of the cloud service, select a **REGION**, and then click the **CREATE CLOUD SERVICE** check mark.
-
-	> **Note:** Make sure to select the same region for all the assets that you create in Windows Azure for this demo, typically the one closest to you.
-
-	![Creating the Cloud Service](Images/create-cloud-service.png?raw=true)
-
-> **Note:** A cloud service is necessary for one of the segments in this demo that shows how to publish to a cloud service from Visual Studio. The segment walks through the steps but does not proceed with the deployment. In addition, the final and optional segment of this demo, [Deploying and Managing Windows Azure Apps](#segment5), also requires a cloud service where you deploy the demo's solution. You may use a single cloud service for both purposes. However, if you prefer to minimize the risk of accidentally overwriting the deployment while showing the first segment, you may want to create an additional cloud service for this other segment.
-
-1. In the **appSettings** section of the **Config.local.xml** file, locate the **cloudService** subsection and replace the placeholder in the **apiBaseUrl** setting with the name of the newly created cloud service. 
-
-> **Note:** If you created two cloud services, one to show Visual Studio publishing and another for the optional segment, make sure that you specify the one that you intend to use for the optional segment.
-
-<a name="setup5" />
-**Creating a Windows Azure SQL Database (optional)**
-
-The deployment for the final, optional segment of this demo, [Deploying and Managing Windows Azure Apps](#segment5), requires the creation of a SQL Database. You may skip this section if you do not intend to show this segment.
-
-To create the database:
-
-1. Go to the **Windows Azure Management Portal**.
-
-1. In the navigation pane, select **SQL DATABASES**, click **NEW** in the command bar, and then **QUICK CREATE**.
-
-1. Enter a **DATABASE NAME**, choose a **SERVER** from the drop-down list, and then click the **CREATE SQL DATABASE** check mark.
-
-	![Creating a Windows Azure SQL Database](Images/sql-database-create.png?raw=true)
-
-1. Now, select the newly created database to access its **DASHBOARD** and then click **Show connection strings** under the **quick glance** section. Take note of the ADO.NET connection string.
-
-	![SQL Database Connection String](Images/sql-database-connection-strings.png?raw=true)
-
-1. In the **appSettings** section of the **Config.local.xml** file, locate the **cloudService** subsection and replace the placeholder for the **dbConnectionString** setting with the value obtained in the previous step. Make sure to replace the password placeholder in the connection string (see {your_password_here}) with your SQL Database server password.
-
-<a name="setup6" />
 **Downloading the Publish Settings File for the Subscription**
 
-1. Go to [https://windows.azure.com/download/publishprofile.aspx]() to download the publish settings file for your subscription. Save the file to your **Downloads** folder. You will need this file during the demo.
+1. Go to [https://windows.azure.com/download/publishprofile.aspx]() to download the publish settings file for your subscription. Save the file to your **Downloads** folder. You will need this file during the demo, as well as for the setup scripts.
 
-<a name="setup7" />
+1. In the **Config.Azure.xml** file, perform the following steps:
+	- Locate the **publishSettingsFilePath** setting and replace the placeholders with the file path where the publish settings file is located.
+	- Locate the **subscriptionName** setting and replace the placeholders with the name of your Azure subscription.
+
+<a name="setup5" />
+**Configuring the Windows Azure Web Site**
+
+1. In the **websiteName** setting of the **Config.Azure.xml** file, replace the placeholders with the name of the Windows Azure Web Site you will create in [Building and Extending Web Apps to Windows 8](#segment1).
+
+	> **Note:** This information is required by the cleanup scripts to remove the underlying SQL Azure database used by the web site.
+
+
+<a name="setup6" />
 **Configuring Identity Providers**
 
 The application used in this demo allows users to log in using one of several configured identity providers. To configure them:
@@ -198,20 +183,20 @@ The application used in this demo allows users to log in using one of several co
 
 	> **Note:** Currently, the Windows 8 application only supports authentication using **Facebook** or **Twitter** accounts
 
-1. In the **Config.local.xml** file, enter the information generated by the identity provider for each configured deployment scenario, local, web site, and cloud service. In each of the subsections of the **appSettings** section, **local**, **website**, and **cloudService**, enter the corresponding application ID (or consumer key) and application secret (or consumer secret) pairs returned by the identity provider. Also, in the **appSettings** section locate the **website** subsection and replace the placeholder in the **apiBaseUrl** setting with the name of the site. 
+1. In the **Config.Local.xml** file, enter the information generated by the identity provider for each configured deployment scenario, local, web site, and cloud service. In each of the subsections of the **appSettings** section, **local**, **website**, and **cloudService**, enter the corresponding application ID (or consumer key) and application secret (or consumer secret) pairs returned by the identity provider. Also, in the **appSettings** section locate the **website** subsection and replace the placeholder in the **apiBaseUrl** setting with the name of the site. 
 
-1. Save the **Config.local.xml** file.
+1. Save the **Config.Local.xml** file.
 
-<a name="setup8" />
+<a name="setup7" />
 **Running the Setup Scripts**
 
-Once you have completed the previous tasks and updated the **Config.local.xml** file with the necessary settings, you may now run the setup scripts that will first copy the solutions to the working folder and then configure them.
+Once you have completed the previous tasks and updated the **Config.Local.xml** and the **Config.Azure.xml** files with the necessary settings, you may now run the setup scripts that will first copy the solutions to the working folder and then configure them.
 
-1. Ensure that you have saved any changes to the **Config.local.xml** file.
+1. Ensure that you have saved any changes to the **Config.Local.xml** and **Config.Azure.xml** files.
 
-1. Run the **Setup.local.cmd** script that you will find in the **source** folder of the demo's install location.
+1. Run the **Setup.cmd** script that you will find in the **source** folder of the demo's install location.
 
-<a name="setup9" />
+<a name="setup8" />
 **Deploying the Application as a Cloud Service and Configuring New Relic (optional)**
 
 The following procedure sets up the deployment used for the final and optional segment of this demo, [Deploying and Managing Windows Azure Apps](#segment5). It shows how to acquire the New Relic (free) add-on from the Windows Azure Store, configure it for the solution, and deploy the application to a cloud service.
@@ -222,14 +207,20 @@ The following procedure sets up the deployment used for the final and optional s
 
 	![Adding New Relic Add-On](Images/adding-new-relic-add-on.png?raw=true "Adding New Relic Add-On")
 
+	_Adding New Relic Add-On_
+
 1. Select the **Standard (FREE)** plan, enter a **NAME** for the add-on, and then click **Next**.
-	![Personalize-new-relic-add-on](Images/personalize-new-relic-add-on.png?raw=true "Adding New Relic Add-On")
+	![Personalize-new-relic-add-on](Images/personalize-new-relic-add-on.png?raw=true)
+
+	_Personalize New Relic Add-On_
 
 1. Once created, select the add-on and click **Connection Info** in the command bar. Copy the value of the **License Key** to the clipboard.
 
 	![New Relic Connection Info](Images/NewRelic-ConnectionInfo.png?raw=true "New Relic Connection Info")
 
 	![Azure License Key](Images/NewRelic-License-Key-Azure.png?raw=true "Azure License Key")
+
+	_Azure license key_
 
 1. In Visual Studio, open the **BuildClips.sln** stored in the working directory, inside the **BuildClips.Web\BuildClipsDeploy** folder.
 
@@ -239,9 +230,13 @@ The following procedure sets up the deployment used for the final and optional s
 
 	![Adding New Relic dependencies](Images/NewRelicWindowsAzure-package.png?raw=true "Adding New Relic dependencies")
 
+	_Adding New Relic dependencies_
+
 1. When prompted, enter the obtained **License Key** and the **Name** chosen when creating the add-on.
 
 	![Setting New Relic License Key](Images/NewRelic-License-Key.png?raw=true "Setting New Relic License Key")
+
+	_Setting New Relic license key_
 
 1. Open the **_Layout.cshtml** file in the **Views\Shared** folder and add the following lines to enable Browser-side metrics on New Relic dashboard.
 
@@ -261,7 +256,6 @@ The following procedure sets up the deployment used for the final and optional s
     </body>
 </html>
 ````
-
 1. Repeat the previous step with the **_Layout.Login.cshtml** file in the **Views\Shared** folder.
 
 	<!-- mark:5,10 -->
@@ -280,21 +274,20 @@ The following procedure sets up the deployment used for the final and optional s
 </html>
 ````
 
-1. Now, right-click the **BuildClips.Azure** project in **Solution Explorer** and then select **Publish**.
+1. Close **Visual Studio**.
 
-1. In the **Publish Windows Azure Application** wizard, if this is your first time publishing an application to the Windows Azure subscription to be used for this demo, choose **Import**, browse to the **Downloads** folder and select the publish settings file that you downloaded earlier from the Management Portal. 
+1. In the **Config.Azure.xml** file, perform the following steps:
+	- Locate the **cloudService** section and replace the placeholder in the **name** setting with the name of the cloud service you want to create. Additionally, specify the region in the **location** setting. 
+	- Locate the **sqlDatabase** section and replace the placeholders for the **name**, **username** and **password** settings with the name of the database you want to create, and the admin user and password for the SQL database server.  Additionally, specify the region in the **location** setting.
+	- In the **storageAccounts**, locate the **diagnosticsStorageAccount** subsection and replace the placeholder for the **name** setting with the name of the storage account you want to create. Additionally, specify the region in the **location** setting.
 
-1. Now, choose the subscription and then click **Next**.
+	> **Note:** The setup script executed in the following steps will automatically create the assets specified above. Make sure to select the same region for all the assets that you create in Windows Azure for this demo, typically the one closest to you.
 
-1. In the **Settings** page of the wizard, make sure to select the service that you created earlier in the **Cloud Service** drop-down list, select the **Production** environment, the **Release** build configuration, the **Cloud** service configuration, and then click **Next**.
+1. Save the **Config.Azure.xml** file.
 
-	![Publishing the Cloud Service](Images/cloud-service-publish.png?raw=true "Publishing the Cloud Service")
+1. Run the **Setup.Deployment.cmd** script that you will find in the **source** folder of the demo's install location. This script will automatically create the cloud service, the Storage account for diagnostics and the Azure SQL database. Finally, it will configure the necessary connection strings in the solution, and deploy the cloud service.
 
-1. Finally, in the **Summary** page, verify that you have entered the correct settings and then click **Publish**.
-
-	![Publishing Settings Summary](Images/cloud-service-publish-summary.png?raw=true "Publishing Settings Summary")
-
-1. Wait for the deployment to complete.
+1. Wait for the setup to complete.
 
 1. Finally, go to the deployed application's URL and sign in.
 
@@ -687,7 +680,7 @@ And the beauty about Windows Azure Media Services is that it exposes a REST API 
 
 	> **Speaking Point:** So I'm going to add now a pre-cooked helper class that will provide some minor extensions to the Media Services SDK library, which are intended to help us on interfacing with our video service.
 
-1. Open **VideoService.cs** and scroll down to the **CreateVideoAsync** method. Replace the **TODO** comment, and the next four lines with the code below.
+1. Open **VideoService.cs** and scroll down to the **CreateVideoAsync** method. Replace the **TODO** comment and the next four lines with the code below.
 	
 	(Code Snippet - _VideoService.cs - Create_)
 	<!-- mark:1-13 -->
@@ -698,31 +691,42 @@ And the beauty about Windows Azure Media Services is that it exposes a REST API 
 									 CloudConfigurationManager.GetSetting("MediaServicesAccountKey"));
 
 	// Create the Media Services asset from the uploaded video
-	var asset = mediaContext.CreateAssetFromStream(name, dataStream);
+	var asset = mediaContext.CreateAssetFromStream(name, title, type, dataStream);
 
 	// Get the Media Services asset URL
 	var videoUrl = mediaContext.GetAssetVideoUrl(asset);
 
 	// Launch the smooth streaming encoding job and store its ID
-	var jobId = mediaContext.ConvertAssetToSmoothStreaming(asset);
+	var jobId = mediaContext.ConvertAssetToSmoothStreaming(asset, true);
 	````
 
 	> **Speaking Point:** There we go. And then I'm just going to update some of the code I showed you earlier so that instead of storing that media inside a storage account, we're instead going to pass it off to Media Services to both store and code and publish. And doing that is really easy. So what I'm going to do here is just replace these four lines of code. This code right here. And what all this code is doing is connecting to my Windows Azure Media Services account. It's going to create a new asset in Media Services from the stream that was uploaded, get back a URL for it, and then kick off an encoding job to convert it to smooth streaming. Just a couple lines of code I can do that.
 
 1. Place the cursor over the **CloudMediaContext** type and press **CTRL+.** to add the using statement. Do the same with **CloudConfigurationManager** on the next line.
 
-1. Next, in the **Publish** method, replace the **TODO** comment with the following code.
+1. Next, in the **Publish** method, replace the **TODO** comment and the next three lines of code with the following snippet.
 
 	> **Speaking Point:** 
 	> And then when I want to publish it so that people can stream it, I can just go ahead and call video services publisher, and this is then going to just call and publish that video on the job object that was encoded and get me back a URL that I can now pass off to my clients to play.
 
 	(Code Snippet - _VideoService.cs - Publish_)
-	<!-- mark:1-4 -->
+	<!-- mark:1-15 -->
 	````C#
     var mediaContext = new CloudMediaContext(
                                      CloudConfigurationManager.GetSetting("MediaServicesAccountName"),
                                      CloudConfigurationManager.GetSetting("MediaServicesAccountKey"));
-    video.EncodedVideoUrl = mediaContext.PublishJobAsset(video.JobId);
+
+    string encodedVideoUrl, thumbnailUrl;
+    if (mediaContext.PublishJobAsset(video.JobId, out encodedVideoUrl, out thumbnailUrl))
+    {
+        video.EncodedVideoUrl = encodedVideoUrl;
+        video.ThumbnailUrl = thumbnailUrl;
+        video.JobId = null;
+
+        this.context.SaveChanges();
+	}
+
+	return video;
 	````
 1. Finally, insert a new method named **GetActiveJobs** into the class.
 
@@ -905,7 +909,7 @@ In this segment, you will evolve the Video web project into an n-tier solution t
 
 	(Code Snippet - _WorkerRole.cs - Run_)
 
-	<!-- mark:1-29 -->
+	<!-- mark:1-26 -->
 	````C#
   public override void Run()
   {
@@ -927,12 +931,9 @@ In this segment, you will evolve the Video web project into an n-tier solution t
 
 			 foreach (var video in activeJobs.ToList())
 			 {
-				  if (video.JobStatus == JobStatus.Completed)
-				  {
-						service.Publish(video.Id);
-				  }
-
-				  proxy.Invoke("VideoUpdated", video.Id, video.JobStatus);
+                 proxy.Invoke(
+                        "VideoUpdated", 
+                        (video.JobStatus == JobStatus.Completed) ? service.Publish(video.Id) : video);
 			 }
 		}
   }
@@ -954,7 +955,7 @@ In this segment, you will evolve the Video web project into an n-tier solution t
 
 	_Add the notifier hub_
 
-1. Open **Notifier.cs** file from the **Hubs** folder. Update the content of the class with the method from below. Then, place the cursor over the **JobStatus** type and press **CTRL+.**).
+1. Open **Notifier.cs** file from the **Hubs** folder. Update the content of the class with the method from below. Then, place the cursor over the **Video** type and press **CTRL+.**).
 
 	> **Speaking Point:** So let me do some small changes to this helper method. When this method gets called by the background service, so it's going to be firing messages to it, it's just broadcasting that message to any client that's listening on the hub, and this works with both browsers as well as devices like Windows 8.
 
@@ -963,12 +964,46 @@ In this segment, you will evolve the Video web project into an n-tier solution t
 	````C#
 	 public class Notifier : Hub
 	 {
-        public void VideoUpdated(int videoId, JobStatus status)
+        public void VideoUpdated(Video video)
         {
-            Clients.All.onVideoUpdate(videoId, status);
+            Clients.All.onVideoUpdate(video);
         }
 	 }
 	````
+
+1. Open **Index.cshtml** in the **Views\Home** folder and insert the following highlighted code into the **Scripts** section.
+
+	(Code Snippet - _Index.cshtml - SignalRNotifications_)
+	<!-- mark:2-16 -->
+	````C#
+@section Scripts {
+        <script src="@Url.Content("~/Scripts/jquery.signalR-1.0.0-alpha2.min.js")"></script>
+        <script src="@Url.Content("~/signalr/hubs")" type="text/javascript"></script>
+        <script>
+            $(function () {
+                var connection = $.hubConnection();
+                var hub = connection.createHubProxy("Notifier");
+                hub.on("onVideoUpdate", function (video) {
+                    if (video.ThumbnailUrl) {
+                        $("#video_" + video.Id).css("background", "url(" + video.ThumbnailUrl + ") no-repeat top left");
+                    }
+                });
+
+                connection.start();
+            });
+        </script>
+
+        <script>
+            $(function () {
+                ...
+            });
+        </script>
+	````
+
+
+	> **Speaking Point:** We'll update the view to listen for notifications from the SignalR hub and update the video item list whenever an encoding job is ready.  
+
+	> **Note:** Make sure that the script reference to **jquery.signalR-1.0.0-alpha2.min.js** in the code from above matches the script file located inside the **Scripts** folder. The name of this script may change when SignalR is released.
 
 1. Go to the **Windows Azure management portal**. Click **Service Bus** within the left pane. To create a service namespace, click **Create** on the bottom bar. 
 
@@ -1077,8 +1112,8 @@ In this segment, you will evolve the Video web project into an n-tier solution t
         	if (connection == null) {
             	connection = $.hubConnection(Configuration.ApiBaseUrl);
             	var hub = connection.createHubProxy("Notifier");
-            	hub.on("onVideoUpdate", function (videoId, status) {
-                	Data.updateVideoItem(videoId, status);
+            	hub.on("onVideoUpdate", function (video) {
+                	Data.updateVideoItem(video);
             	});
 
             	connection.start({ waitForPageLoad: false });
@@ -1110,6 +1145,8 @@ In this segment, you will evolve the Video web project into an n-tier solution t
       <script src="/js/notifications.js"></script>
    </head>
 	````
+
+	> **Note:** Make sure that the script reference to **jquery.signalR-1.0.0-alpha2.min.js** in the code from above matches the script file located inside the **Scripts** folder. The name of this script may change when SignalR is released.
 
 1. Open the **config.js** file inside the **js** folder, and modify the **ApiBaseUrl** property to point to **http://127.0.0.1:81/**.
 
@@ -1206,6 +1243,8 @@ In this segment, you will improve the scalability and performance of your Window
 
 	!["Enabling profiling"](Images/enabling-profiling.png?raw=true "Enabling profiling")
 
+	_Enabling profiling_
+
 1. Switch to the Visual Studio 2012 instance that has the BuildClips web project already open and stop the solution.  
 
 	> **Speaking Point:** Let's enable Windows Azure Caching for our cloud service. 
@@ -1216,6 +1255,8 @@ In this segment, you will improve the scalability and performance of your Window
 
 	![Enabling caching in Web Role properties](Images/web-role-properties.png?raw=true "Enabling caching in Web Role properties")
 
+	_Enabling caching in Web Role properties_
+
 	> **Speaking point:** We can tell Windows Azure to use a percentage of the available memory in the web role. 
 	
 1. Press **CTRL** + **S** to save the changes and close the Properties window.
@@ -1224,14 +1265,17 @@ In this segment, you will improve the scalability and performance of your Window
 
 	> **Speaking point:** Now we need to reference the Windows Azure Caching assemblies so we can interact with the cache from our application.  To do this, we'll simply right-click our solution to pull up the Manage NuGet Packages dialog and install the Windows Azure Caching NuGet package into our projects.
 
+	![Manage nuget packages for solution](Images/manage-nuget-packages-for-solution.png?raw=true)
 
-	![manage nuget packages for solution](Images/manage-nuget-packages-for-solution.png?raw=true)
+	_Manage nuget packages for solution_
 
 1. In the **NuGet Package Manager**, expand the **Online** node and search for the **Windows Azure Caching** package.
 
 1. Select package, click **Install** and confirm to install the package **in the three projects**. Close the package manager.
 	
-	![install caching nuget](Images/install-caching-nuget.png?raw=true)
+	![Install caching nuget](Images/install-caching-nuget.png?raw=true)
+
+	_Install caching nuget_
 
 1. Open **Web.config** in the **BuildClips** project. Locate the `<dataCacheClients>` element and replace the `[cache cluster role name]` placeholder with **BuildClips**. 
 
@@ -1313,7 +1357,7 @@ In this segment, you will improve the scalability and performance of your Window
 	public void Publish(int id)
    {
 		...
-		context.SaveChanges();
+		this.context.SaveChanges();
 
 		var cache = new DataCache();
 		cache.Remove("videoList");
@@ -1348,13 +1392,17 @@ In this segment, you will improve the scalability and performance of your Window
 
 	> **Speaking point:** Let's refresh our list of videos. Since this is our first request following a cold start of the application, the measured time also includes the warm-up time for the cache, database connection initialization, and other factors that make it unsuitable for representing the cache miss scenario accurately, so we'll skip this first reading.
 
-	![](Images/refresh.png?raw=true "Refresh")
+	![Refreshing the video list](Images/refresh.png?raw=true "Refresh")
+
+	_Refreshing the video list_
 
 1. In the Windows 8 app, open the **charms bar** and select **Settings**. 
 
 1. Now, select the **Profiling** option and click **Clear Cache**.
 
-	![](Images/clear-cache.png?raw=true "Clear Cache")
+	![Clear cache](Images/clear-cache.png?raw=true "Clear Cache")
+
+	_Clear cache_
 
 	> **Speaking point:** Let's start from a known state by clearing the cache. This will remove all items from the cache.  
 
@@ -1362,13 +1410,17 @@ In this segment, you will improve the scalability and performance of your Window
 
 	> **Speaking point:** Let's refresh our list of videos. Since the cache is now empty, the service will need to go back to the database to retrieve the list of videos and then it will add them to the cache. Notice that it's taking a significant amount of time to do this. 
 
-	![](Images/response-time-slow.png?raw=true "Response time")
+	![Response time with cache miss](Images/response-time-slow.png?raw=true "Response time")
+
+	_Response time with cache miss_
 
 1. Refresh the list of videos again one or more times to show that caching response time has decreased.
 
 	> **Speaking point:** Now you can see that the response time has significantly improved. 
 
-	![](Images/response-time-fast.png?raw=true "Response time")
+	![Response time with cache hit](Images/response-time-fast.png?raw=true "Response time")
+
+	_Response time with cache hit_
 
 1. Clear the cache again to force a cache miss and repeat the sequence.
 

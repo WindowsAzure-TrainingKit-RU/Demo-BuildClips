@@ -195,21 +195,21 @@
         return cacheDictionary[video.Id];
     }
 
-    function updateVideoItem(videoId, status) {
-        var videoToUpdate;
+    function updateVideoItem(updatedVideo) {
         var videoToUpdateIndex = -1;
 
         Data.items.forEach(function (video, index) {
-            if (video.id == videoId) {
-                videoToUpdate = video;
+            if (video.id == updatedVideo.Id) {
                 videoToUpdateIndex = index;
             }
         });
 
-        if (videoToUpdate && videoToUpdateIndex != -1) {
-            videoToUpdate.status = status;
-            videoToUpdate.statusTimespan = new Date();
+        if (videoToUpdateIndex != -1) {
+            var videoToUpdate = getListItem(updatedVideo);
             Data.items.setAt(videoToUpdateIndex, videoToUpdate);
+        }
+        else {
+            Data.getAllItems();
         }
     }
 

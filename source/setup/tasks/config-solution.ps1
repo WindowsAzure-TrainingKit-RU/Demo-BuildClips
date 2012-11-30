@@ -30,7 +30,6 @@ $xml.SelectNodes("//appSettings/add[@key = 'TwitterConsumerSecret']").setAttribu
 
 $xml.SelectNodes("//appSettings/add[@key = 'MediaServicesAccountName']").setAttribute("value", $mediaServicesAccountName)
 $xml.SelectNodes("//appSettings/add[@key = 'MediaServicesAccountKey']").setAttribute("value", $mediaServicesAccountKey)
-$xml.SelectNodes("//appSettings/add[@key = 'MediaServicesStorageAccountConnectionString']").setAttribute("value", $storageAccountConnectionString)
 $xml.SelectNodes("//appSettings/add[@key = 'ServiceBusConnectionString']").setAttribute("value", $serviceBusConnectionString)
 
 $xml.Save($file)

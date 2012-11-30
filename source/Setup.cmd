@@ -23,17 +23,6 @@ echo.
 
 cls
 
-call %powerShellDir%\powershell.exe -Command "&'.\setup\tasks\show-consent-message.ps1' -SetupLocal "; exit $LASTEXITCODE
-IF %ERRORLEVEL% == 1 GOTO exit
-cls
-
-call %powerShellDir%\powershell.exe -Command "&'.\setup\tasks\show-config-xml-message.ps1' Config.Local.xml"; exit $LASTEXITCODE
-IF %ERRORLEVEL% == 1 GOTO exit
-cls
-
-REM call %powerShellDir%\powershell.exe -Command "&'.\setup\tasks\install-demotoolkit.ps1' "; exit $LASTEXITCODE
-cls
-
 call %powerShellDir%\powershell.exe -Command "&'.\setup\tasks\RunDC.ps1'"
 
 :exit

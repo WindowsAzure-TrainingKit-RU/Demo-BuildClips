@@ -6,7 +6,7 @@ form.show-validations .invalid {
 
 #contenthost {
     height: 100%;
-    width: 100%;     
+    width: 100%;    
     color: #333;
 }
 
@@ -200,30 +200,6 @@ div.video-tags-list .tag.more:hover {
     background: linear-gradient(#464646, #363636);
 }
 
-@media screen and (-ms-view-state: snapped) {
-    .fragment header[role=banner] {
-        -ms-grid-columns: auto 1fr;
-        margin-left: 20px;
-    }
-
-        .fragment header[role=banner] .win-backbutton {
-            margin: 0;
-            margin-right: 10px;
-            margin-top: 76px;
-        }
-
-            .fragment header[role=banner] .win-backbutton:disabled {
-                display: none;
-            }
-
-        .fragment header[role=banner] .titlearea {
-            -ms-grid-column: 1;
-			-ms-grid-row: 2;
-            margin-left: 0;
-            margin-top: 68px;
-        }
-}
-
 @media screen and (-ms-view-state: fullscreen-portrait) {
     .fragment header[role=banner] {
         -ms-grid-columns: 100px 1fr;
@@ -234,9 +210,7 @@ div.video-tags-list .tag.more:hover {
         }
 }
 
-/*
-Global Styles
-*/
+/* Global Styles */
 
 ::-ms-input-placeholder {
     color: #c9d1d2;
@@ -277,31 +251,26 @@ div.column-container {
 }
 
 @media screen and (-ms-view-state: snapped) {
-    .fragment header[role=banner] {
-        margin-left: 0px;
-    }
-
+	.fragment header[role=banner] .user-box {
+		display: none;
+	}
+	
     .fragment header[role=banner] .topbar {
-        background-position-x: 10px;
-    }
-
-    .fragment header[role=banner] .titlearea {
-        -ms-grid-column:1;
-        
-        margin-top: 48px;
-        margin-left: 10px;
-    }
-
-    .fragment header[role=banner] .titlearea .pagetitle {
-        margin-top: 48px;
-    }
-
-    .fragment header[role=banner] .user-box {
-        margin-right: -20px;
+        background-position-x: 5px;
+		background-position-y: 20px;
     }
 
     .fragment header[role=banner] .win-backbutton {
-        margin-top: 10px;
-        margin-left: 10px;
+        margin-top: -8px;
+        margin-left: 12px;
     }
+
+	.fragment header[role=banner] .titlearea {
+		-ms-grid-column: 1;
+		-ms-grid-row: 1;
+		margin-left: 0;
+		margin-top: 50px;
+		font-size: 40px;
+		width: 50%;
+	}
 }

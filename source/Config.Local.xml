@@ -31,8 +31,6 @@
             <facebookApplicationSecret>{YOUR-FACEBOOK-SECRET}</facebookApplicationSecret>
             <twitterConsumerKey>{YOUR-TWITTER-CONSUMERKEY}</twitterConsumerKey>
             <twitterConsumerSecret>{YOUR-TWITTER-SECRET}</twitterConsumerSecret>
-
-            <apiBaseUrl>http://127.0.0.1:81/</apiBaseUrl>
         </local>
         
         <website>
@@ -49,9 +47,6 @@
             <facebookApplicationSecret>{YOUR-FACEBOOK-SECRET}</facebookApplicationSecret>
             <twitterConsumerKey>{YOUR-TWITTER-CONSUMERKEY}</twitterConsumerKey>
             <twitterConsumerSecret>{YOUR-TWITTER-SECRET}</twitterConsumerSecret>
-
-            <apiBaseUrl>http://{YOUR-CLOUD-SERVICE-NAME}.cloudapp.net/</apiBaseUrl>
-            <dbConnectionString>{YOUR-DATABASE-CONNECTION-STRING}</dbConnectionString>
         </cloudService>
     </appSettings>
 

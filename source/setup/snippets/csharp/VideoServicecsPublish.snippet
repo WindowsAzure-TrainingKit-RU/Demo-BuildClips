@@ -13,7 +13,18 @@
         <![CDATA[var mediaContext = new CloudMediaContext(
                                  CloudConfigurationManager.GetSetting("MediaServicesAccountName"),
                                  CloudConfigurationManager.GetSetting("MediaServicesAccountKey"));
-video.EncodedVideoUrl = mediaContext.PublishJobAsset(video.JobId);]]>
+
+string encodedVideoUrl, thumbnailUrl;
+if (mediaContext.PublishJobAsset(video.JobId, out encodedVideoUrl, out thumbnailUrl))
+{
+    video.EncodedVideoUrl = encodedVideoUrl;
+    video.ThumbnailUrl = thumbnailUrl;
+    video.JobId = null;
+
+    this.context.SaveChanges();
+}
+
+return video;]]>
       </Code>
     </Snippet>
   </CodeSnippet>

@@ -40,13 +40,13 @@
                                              CloudConfigurationManager.GetSetting("MediaServicesAccountKey"));
 
             // Create the Media Services asset from the uploaded video
-            var asset = mediaContext.CreateAssetFromStream(name, dataStream);
+            var asset = mediaContext.CreateAssetFromStream(name, title, type, dataStream);
 
             // Get the Media Services asset URL
             var videoUrl = mediaContext.GetAssetVideoUrl(asset);
 
             // Launch the smooth streaming encoding job and store its ID
-            var jobId = mediaContext.ConvertAssetToSmoothStreaming(asset);
+            var jobId = mediaContext.ConvertAssetToSmoothStreaming(asset, true);
 
             var video = new Video
                 {
@@ -89,23 +89,30 @@
             yield break;
         }
 
-        public void Publish(int id)
+        public Video Publish(int id)
         {
             var video = this.context.Videos.FirstOrDefault(v => v.Id == id);
 
             if (video == null)
             {
-                return;
+                return null;
             }
 
             var mediaContext = new CloudMediaContext(
                                              CloudConfigurationManager.GetSetting("MediaServicesAccountName"),
                                              CloudConfigurationManager.GetSetting("MediaServicesAccountKey"));
-            video.EncodedVideoUrl = mediaContext.PublishJobAsset(video.JobId);
 
-            video.JobId = null;
+            string encodedVideoUrl, thumbnailUrl;
+            if (mediaContext.PublishJobAsset(video.JobId, out encodedVideoUrl, out thumbnailUrl))
+            {
+                video.EncodedVideoUrl = encodedVideoUrl;
+                video.ThumbnailUrl = thumbnailUrl;
+                video.JobId = null;
 
-            this.context.SaveChanges();
+                this.context.SaveChanges();
+            }
+
+            return video;
         }
 
         public async Task DeleteVideoAsync(int id)

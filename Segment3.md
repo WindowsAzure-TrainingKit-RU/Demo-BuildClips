@@ -89,7 +89,7 @@ In this segment, you will evolve the Video web project into an n-tier solution t
 
 	(Code Snippet - _WorkerRole.cs - Run_)
 
-	<!-- mark:1-29 -->
+	<!-- mark:1-26 -->
 	````C#
   public override void Run()
   {
@@ -111,12 +111,9 @@ In this segment, you will evolve the Video web project into an n-tier solution t
 
 			 foreach (var video in activeJobs.ToList())
 			 {
-				  if (video.JobStatus == JobStatus.Completed)
-				  {
-						service.Publish(video.Id);
-				  }
-
-				  proxy.Invoke("VideoUpdated", video.Id, video.JobStatus);
+                 proxy.Invoke(
+                        "VideoUpdated", 
+                        (video.JobStatus == JobStatus.Completed) ? service.Publish(video.Id) : video);
 			 }
 		}
   }
@@ -138,7 +135,7 @@ In this segment, you will evolve the Video web project into an n-tier solution t
 
 	_Add the notifier hub_
 
-1. Open **Notifier.cs** file from the **Hubs** folder. Update the content of the class with the method from below. Then, place the cursor over the **JobStatus** type and press **CTRL+.**).
+1. Open **Notifier.cs** file from the **Hubs** folder. Update the content of the class with the method from below. Then, place the cursor over the **Video** type and press **CTRL+.**).
 
 	> **Speaking Point:** So let me do some small changes to this helper method. When this method gets called by the background service, so it's going to be firing messages to it, it's just broadcasting that message to any client that's listening on the hub, and this works with both browsers as well as devices like Windows 8.
 
@@ -147,12 +144,46 @@ In this segment, you will evolve the Video web project into an n-tier solution t
 	````C#
 	 public class Notifier : Hub
 	 {
-        public void VideoUpdated(int videoId, JobStatus status)
+        public void VideoUpdated(Video video)
         {
-            Clients.All.onVideoUpdate(videoId, status);
+            Clients.All.onVideoUpdate(video);
         }
 	 }
 	````
+
+1. Open **Index.cshtml** in the **Views\Home** folder and insert the following highlighted code into the **Scripts** section.
+
+	(Code Snippet - _Index.cshtml - SignalRNotifications_)
+	<!-- mark:2-16 -->
+	````C#
+@section Scripts {
+        <script src="@Url.Content("~/Scripts/jquery.signalR-1.0.0-alpha2.min.js")"></script>
+        <script src="@Url.Content("~/signalr/hubs")" type="text/javascript"></script>
+        <script>
+            $(function () {
+                var connection = $.hubConnection();
+                var hub = connection.createHubProxy("Notifier");
+                hub.on("onVideoUpdate", function (video) {
+                    if (video.ThumbnailUrl) {
+                        $("#video_" + video.Id).css("background", "url(" + video.ThumbnailUrl + ") no-repeat top left");
+                    }
+                });
+
+                connection.start();
+            });
+        </script>
+
+        <script>
+            $(function () {
+                ...
+            });
+        </script>
+	````
+
+
+	> **Speaking Point:** We'll update the view to listen for notifications from the SignalR hub and update the video item list whenever an encoding job is ready.  
+
+	> **Note:** Make sure that the script reference to **jquery.signalR-1.0.0-alpha2.min.js** in the code from above matches the script file located inside the **Scripts** folder. The name of this script may change when SignalR is released.
 
 1. Go to the **Windows Azure management portal**. Click **Service Bus** within the left pane. To create a service namespace, click **Create** on the bottom bar. 
 
@@ -261,8 +292,8 @@ In this segment, you will evolve the Video web project into an n-tier solution t
         	if (connection == null) {
             	connection = $.hubConnection(Configuration.ApiBaseUrl);
             	var hub = connection.createHubProxy("Notifier");
-            	hub.on("onVideoUpdate", function (videoId, status) {
-                	Data.updateVideoItem(videoId, status);
+            	hub.on("onVideoUpdate", function (video) {
+                	Data.updateVideoItem(video);
             	});
 
             	connection.start({ waitForPageLoad: false });
@@ -294,6 +325,8 @@ In this segment, you will evolve the Video web project into an n-tier solution t
       <script src="/js/notifications.js"></script>
    </head>
 	````
+
+	> **Note:** Make sure that the script reference to **jquery.signalR-1.0.0-alpha2.min.js** in the code from above matches the script file located inside the **Scripts** folder. The name of this script may change when SignalR is released.
 
 1. Open the **config.js** file inside the **js** folder, and modify the **ApiBaseUrl** property to point to **http://127.0.0.1:81/**.
 
